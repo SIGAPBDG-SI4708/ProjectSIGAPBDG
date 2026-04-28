@@ -8,6 +8,15 @@ Route::get('/', function () {
     return view('welcome');
 })->name('beranda');
 
+// SIGAP-17 Routing Pelaporan Kejahatan dan Lacak
+Route::get('/lapor', [LaporanController::class, 'tampilkanFormLapor'])->name('lapor');
+Route::post('/lapor', [LaporanController::class, 'prosesSimpanLaporan'])->name('proses.laporan');
+
+Route::get('/lacak', [LaporanController::class, 'tampilkanFormLacak'])->name('lacak');
+Route::post('/lacak', [LaporanController::class, 'prosesCariLaporan'])->name('proses.lacak');
+
+Route::post('/lapor-kejahatan', [LaporanController::class, 'simpanKejahatan'])->name('lapor.kejahatan');
+
 // [SIGAP-17] Routing Autentikasi (Login & Register)
 Route::middleware('guest')->group(function () {
     // Login
