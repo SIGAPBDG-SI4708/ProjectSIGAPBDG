@@ -4,413 +4,207 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buat Laporan - SIGAP BDG</title>
-    <meta name="description" content="Form pelaporan infrastruktur dan keamanan warga Kota Bandung secara anonim dengan SIGAP BDG.">
+    <meta name="description" content="Laporkan kerusakan infrastruktur di Kota Bandung secara mudah dan gratis tanpa perlu login.">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .gps-pulse {
-            animation: pulse 1.5s infinite;
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
-        }
-        .preview-img {
-            transition: opacity 0.3s ease;
-        }
-        .drag-over {
-            border-color: #3b82f6 !important;
-            background-color: #eff6ff !important;
-        }
+        #pratinjauFoto { transition: opacity 0.3s ease; }
+        .upload-area { transition: border-color 0.2s, background-color 0.2s; }
+        .upload-area:hover { border-color: #6366f1; background-color: rgba(99,102,241,0.05); }
+        .btn-submit { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(99,102,241,0.4); }
+        .status-lokasi { transition: all 0.3s ease; }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 py-10 px-4">
+<body class="bg-gray-950 text-white min-h-screen">
 
-    {{-- Header --}}
-    <div class="max-w-2xl mx-auto mb-8 text-center">
-        <a href="{{ route('beranda') }}" class="inline-flex items-center gap-2 text-blue-200 hover:text-white text-sm mb-6 transition">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-            Kembali ke Beranda
-        </a>
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
-            </svg>
-        </div>
-        <h1 class="text-3xl font-bold text-white">Buat Laporan</h1>
-        <p class="text-blue-200 text-sm mt-2">Laporkan masalah infrastruktur atau kejahatan di sekitarmu secara anonim.</p>
-    </div>
-
-    {{-- Card Form --}}
-    <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
-
-        {{-- Progress Bar --}}
-        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 h-1.5">
-            <div id="progress-bar" class="bg-yellow-400 h-full transition-all duration-500" style="width: 0%"></div>
-        </div>
-
-        <div class="px-8 py-8">
-
-            {{-- Flash Message --}}
-            @if (session('sukses'))
-                <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 mb-6 text-sm flex items-center gap-2">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="{{ route('beranda') }}" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                     </svg>
-                    {{ session('sukses') }}
                 </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-6 text-sm">
-                    <ul class="list-disc list-inside space-y-1">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <form id="form-laporan" method="POST" action="{{ route('laporan.simpan') }}" enctype="multipart/form-data" class="space-y-6">
-                @csrf
-
-                {{-- Jenis Laporan --}}
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">
-                        Jenis Laporan <span class="text-red-500">*</span>
-                    </label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label for="jenis-infrastruktur"
-                            class="jenis-card flex flex-col items-center gap-2 border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
-                            <input type="radio" id="jenis-infrastruktur" name="jenis_laporan" value="infrastruktur"
-                                class="sr-only" {{ old('jenis_laporan') == 'infrastruktur' ? 'checked' : '' }} required>
-                            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                            <span class="text-sm font-medium text-gray-700">Infrastruktur</span>
-                            <span class="text-xs text-gray-400 text-center">Jalan rusak, lampu mati, drainase, dll.</span>
-                        </label>
-
-                        <label for="jenis-kejahatan"
-                            class="jenis-card flex flex-col items-center gap-2 border-2 border-gray-200 rounded-xl p-4 cursor-pointer hover:border-red-400 hover:bg-red-50 transition-all duration-200 has-[:checked]:border-red-500 has-[:checked]:bg-red-50">
-                            <input type="radio" id="jenis-kejahatan" name="jenis_laporan" value="kejahatan"
-                                class="sr-only" {{ old('jenis_laporan') == 'kejahatan' ? 'checked' : '' }}>
-                            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                            </svg>
-                            <span class="text-sm font-medium text-gray-700">Kejahatan</span>
-                            <span class="text-xs text-gray-400 text-center">Kriminal, pencurian, vandalisme, dll.</span>
-                        </label>
-                    </div>
-                </div>
-
-                {{-- Deskripsi --}}
-                <div>
-                    <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Deskripsi Laporan <span class="text-red-500">*</span>
-                    </label>
-                    <textarea
-                        id="deskripsi"
-                        name="deskripsi"
-                        rows="4"
-                        required
-                        maxlength="1000"
-                        placeholder="Ceritakan detail kejadian atau masalah yang kamu temukan..."
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
-                    >{{ old('deskripsi') }}</textarea>
-                    <div class="flex justify-end mt-1">
-                        <span id="char-count" class="text-xs text-gray-400">0 / 1000</span>
-                    </div>
-                </div>
-
-                {{-- Upload Foto --}}
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Foto Bukti <span class="text-gray-400 font-normal">(opsional, maks. 5MB)</span>
-                    </label>
-                    <div id="drop-zone"
-                        class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all duration-200"
-                        onclick="document.getElementById('foto').click()">
-                        <div id="drop-placeholder">
-                            <svg class="w-10 h-10 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
-                            <p class="text-sm text-gray-500">Klik atau seret foto ke sini</p>
-                            <p class="text-xs text-gray-400 mt-1">PNG, JPG, JPEG — maks. 5MB</p>
-                        </div>
-                        <div id="preview-container" class="hidden">
-                            <img id="preview-img" src="#" alt="Preview foto" class="preview-img max-h-48 mx-auto rounded-lg object-cover shadow">
-                            <p id="preview-name" class="text-xs text-gray-500 mt-2"></p>
-                            <button type="button" id="hapus-foto"
-                                class="mt-2 text-xs text-red-500 hover:text-red-700 underline"
-                                onclick="event.stopPropagation(); hapusFoto()">Hapus foto</button>
-                        </div>
-                    </div>
-                    <input type="file" id="foto" name="foto" accept="image/*" capture="environment" class="hidden">
-                </div>
-
-                {{-- Lokasi GPS --}}
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Lokasi Kejadian <span class="text-red-500">*</span>
-                    </label>
-                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                        <div class="flex items-center justify-between gap-3">
-                            <div class="flex-1">
-                                <p id="gps-status" class="text-sm text-gray-500">Lokasi belum terdeteksi.</p>
-                                <p id="gps-coords" class="text-xs text-gray-400 mt-0.5 font-mono hidden"></p>
-                            </div>
-                            <button type="button" id="btn-gps"
-                                onclick="deteksiLokasi()"
-                                class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition shrink-0">
-                                <svg id="gps-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                </svg>
-                                <span id="btn-gps-text">Deteksi Lokasi</span>
-                            </button>
-                        </div>
-
-                        {{-- Alamat Manual --}}
-                        <div class="mt-3 pt-3 border-t border-gray-200">
-                            <label for="alamat" class="block text-xs font-medium text-gray-600 mb-1">
-                                Alamat / Keterangan Lokasi <span class="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="alamat"
-                                name="alamat"
-                                value="{{ old('alamat') }}"
-                                required
-                                placeholder="Contoh: Jl. Braga No. 10, depan toko buku"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                            >
-                        </div>
-                    </div>
-
-                    {{-- Hidden fields koordinat --}}
-                    <input type="hidden" id="latitude" name="latitude" value="{{ old('latitude') }}">
-                    <input type="hidden" id="longitude" name="longitude" value="{{ old('longitude') }}">
-                </div>
-
-                {{-- Nama Pelapor (Opsional) --}}
-                <div>
-                    <label for="nama_pelapor" class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Nama Pelapor <span class="text-gray-400 font-normal">(opsional, bisa anonim)</span>
-                    </label>
-                    <input
-                        type="text"
-                        id="nama_pelapor"
-                        name="nama_pelapor"
-                        value="{{ old('nama_pelapor') }}"
-                        placeholder="Kosongkan jika ingin anonim"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                    >
-                </div>
-
-                {{-- Submit --}}
-                <div class="pt-2">
-                    <button
-                        type="submit"
-                        id="btn-submit"
-                        class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                        </svg>
-                        Kirim Laporan
-                    </button>
-                    <p class="text-xs text-gray-400 text-center mt-3">
-                        Laporan kamu akan mendapat <strong>Tracking ID</strong> untuk memantau status.
-                    </p>
-                </div>
-
-            </form>
+                <span class="font-bold text-lg tracking-tight">SIGAP <span class="text-indigo-400">BDG</span></span>
+            </a>
+            <a href="{{ route('lacak') }}" class="text-sm text-gray-400 hover:text-white transition flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                Lacak Laporan
+            </a>
         </div>
-    </div>
+    </nav>
 
-    {{-- Link ke halaman lacak --}}
-    <div class="max-w-2xl mx-auto mt-6 text-center">
-        <p class="text-blue-200 text-sm">
-            Sudah punya laporan?
-            <a href="{{ route('laporan.lacak') }}" class="text-white font-semibold hover:underline">Lacak statusnya →</a>
-        </p>
-    </div>
+    <main class="max-w-2xl mx-auto px-4 sm:px-6 pt-28 pb-16">
 
-    {{-- JavaScript: GPS & Preview Foto --}}
+        @if(session('trackingBerhasil'))
+        <div id="notifBerhasil" class="mb-8 bg-green-950 border border-green-500/30 rounded-2xl p-6 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-r from-green-500/5 to-transparent pointer-events-none"></div>
+            <div class="relative">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    </div>
+                    <div>
+                        <div class="text-green-400 font-bold text-base">Laporan Berhasil Dikirim!</div>
+                        <div class="text-green-500/70 text-xs">Simpan kode tracking berikut untuk memantau status laporan Anda</div>
+                    </div>
+                </div>
+                <div class="bg-gray-900 border border-green-500/20 rounded-xl p-4 flex items-center justify-between gap-3">
+                    <div>
+                        <div class="text-xs text-gray-500 mb-0.5">Tracking ID Anda</div>
+                        <div id="kodeTracking" class="text-2xl font-black tracking-widest text-white">{{ session('trackingBerhasil') }}</div>
+                    </div>
+                    <button onclick="salinKode()" class="flex-shrink-0 bg-green-600/20 hover:bg-green-600/30 border border-green-500/30 text-green-400 text-xs font-semibold px-4 py-2 rounded-lg transition">
+                        Salin
+                    </button>
+                </div>
+                <div class="mt-3 flex items-center gap-2">
+                    <a href="{{ route('lacak') }}" class="text-xs text-indigo-400 hover:text-indigo-300 transition font-medium flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Lacak laporan ini sekarang
+                    </a>
+                </div>
+            </div>
+        </div>
+        @endif
+
+        @if($errors->any())
+        <div class="mb-6 bg-red-950 border border-red-500/30 rounded-xl p-4">
+            <ul class="space-y-1">
+                @foreach($errors->all() as $pesan)
+                    <li class="text-red-400 text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        {{ $pesan }}
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        <div class="mb-10">
+            <div class="inline-flex items-center gap-2 bg-orange-500/10 border border-orange-500/20 text-orange-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                Laporan Infrastruktur
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-black mb-3">Laporkan <span class="gradient-text">Kerusakan</span></h1>
+            <p class="text-gray-400 text-base">Foto kerusakan infrastruktur di sekitar Anda. Lokasi GPS akan terdeteksi otomatis. Tidak perlu login, gratis.</p>
+        </div>
+
+        <form action="{{ route('proses.laporan') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+
+            <input type="hidden" id="inputLatitude" name="latitude" value="{{ old('latitude') }}">
+            <input type="hidden" id="inputLongitude" name="longitude" value="{{ old('longitude') }}">
+
+            <div class="bg-gray-900 border border-white/5 rounded-2xl p-5 sm:p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <div class="text-sm font-semibold text-white mb-0.5">Lokasi GPS</div>
+                        <div class="text-xs text-gray-500">Koordinat dideteksi otomatis dari perangkat Anda</div>
+                    </div>
+                    <div id="ikonLokasi" class="w-10 h-10 bg-gray-800 rounded-xl flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    </div>
+                </div>
+                <div id="statusLokasi" class="status-lokasi bg-gray-800 rounded-xl px-4 py-3 text-xs text-gray-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse flex-shrink-0"></span>
+                    Mendeteksi lokasi... Izinkan akses GPS jika diminta.
+                </div>
+            </div>
+
+            <div class="bg-gray-900 border border-white/5 rounded-2xl p-5 sm:p-6">
+                <div class="text-sm font-semibold text-white mb-1">Foto Kerusakan</div>
+                <div class="text-xs text-gray-500 mb-4">Upload foto jalan berlubang atau kerusakan infrastruktur (maks. 5MB)</div>
+                <label for="inputFoto" class="upload-area border-2 border-dashed border-gray-700 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer gap-3 relative group">
+                    <div id="ikonUpload" class="text-center">
+                        <div class="w-14 h-14 bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-500/10 transition">
+                            <svg class="w-7 h-7 text-gray-500 group-hover:text-indigo-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div class="text-sm font-medium text-gray-300">Klik untuk pilih foto</div>
+                        <div class="text-xs text-gray-600 mt-1">atau seret dan lepas file di sini</div>
+                    </div>
+                    <img id="pratinjauFoto" src="" alt="Pratinjau" class="hidden max-h-60 rounded-xl object-cover w-full opacity-0">
+                    <input type="file" id="inputFoto" name="foto" accept="image/*" class="hidden">
+                </label>
+            </div>
+
+            <button type="submit" id="tombolKirim" class="btn-submit w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-bold py-4 px-6 rounded-xl shadow-xl shadow-indigo-500/20 flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Kirim Laporan
+            </button>
+
+            <p class="text-center text-xs text-gray-600">Dengan mengirim laporan, Anda menyetujui bahwa data ini akan diproses oleh sistem SIGAP BDG.</p>
+        </form>
+    </main>
+
     <script>
-        // =============================================
-        // [SIGAP-11] GPS Geolocation Detection
-        // =============================================
-        function deteksiLokasi() {
-            const btnText    = document.getElementById('btn-gps-text');
-            const gpsIcon    = document.getElementById('gps-icon');
-            const gpsStatus  = document.getElementById('gps-status');
-            const gpsCoords  = document.getElementById('gps-coords');
-            const latInput   = document.getElementById('latitude');
-            const lngInput   = document.getElementById('longitude');
+        (function() {
+            var inputLat = document.getElementById('inputLatitude');
+            var inputLng = document.getElementById('inputLongitude');
+            var statusEl = document.getElementById('statusLokasi');
+            var ikonEl   = document.getElementById('ikonLokasi');
 
-            if (!navigator.geolocation) {
-                gpsStatus.textContent = '⚠️ Browser tidak mendukung GPS.';
-                gpsStatus.classList.add('text-red-500');
-                return;
+            function berhasil(posisi) {
+                var lat = posisi.coords.latitude.toFixed(8);
+                var lng = posisi.coords.longitude.toFixed(8);
+                inputLat.value = lat;
+                inputLng.value = lng;
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-400 flex-shrink-0"></span> Lokasi terdeteksi: ' + lat + ', ' + lng;
+                statusEl.classList.remove('text-gray-400');
+                statusEl.classList.add('text-green-400');
+                ikonEl.innerHTML = '<svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+                ikonEl.classList.add('bg-green-500/10');
+                ikonEl.classList.remove('bg-gray-800');
             }
 
-            // Loading state
-            btnText.textContent = 'Mendeteksi...';
-            gpsIcon.classList.add('gps-pulse');
-            gpsStatus.textContent = 'Sedang mendeteksi lokasi kamu...';
-            gpsStatus.classList.remove('text-green-600', 'text-red-500');
-            gpsStatus.classList.add('text-blue-500');
-
-            navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    const lat = position.coords.latitude.toFixed(6);
-                    const lng = position.coords.longitude.toFixed(6);
-                    const acc = Math.round(position.coords.accuracy);
-
-                    // Isi hidden field
-                    latInput.value = lat;
-                    lngInput.value = lng;
-
-                    // Update UI
-                    gpsStatus.textContent = '✅ Lokasi berhasil terdeteksi!';
-                    gpsStatus.classList.remove('text-blue-500', 'text-red-500');
-                    gpsStatus.classList.add('text-green-600');
-
-                    gpsCoords.textContent = `Lat: ${lat}, Lng: ${lng} (akurasi ±${acc}m)`;
-                    gpsCoords.classList.remove('hidden');
-
-                    btnText.textContent = 'Perbarui Lokasi';
-                    gpsIcon.classList.remove('gps-pulse');
-
-                    updateProgress();
-                },
-                function (error) {
-                    let pesan = 'Gagal mendeteksi lokasi.';
-                    if (error.code === error.PERMISSION_DENIED)
-                        pesan = '⚠️ Izin lokasi ditolak. Aktifkan di pengaturan browser.';
-                    else if (error.code === error.POSITION_UNAVAILABLE)
-                        pesan = '⚠️ Informasi lokasi tidak tersedia.';
-                    else if (error.code === error.TIMEOUT)
-                        pesan = '⚠️ Waktu deteksi habis. Coba lagi.';
-
-                    gpsStatus.textContent = pesan;
-                    gpsStatus.classList.remove('text-blue-500', 'text-green-600');
-                    gpsStatus.classList.add('text-red-500');
-
-                    btnText.textContent = 'Coba Lagi';
-                    gpsIcon.classList.remove('gps-pulse');
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
-        }
-
-        // =============================================
-        // Preview & Upload Foto
-        // =============================================
-        const fotoInput      = document.getElementById('foto');
-        const dropZone       = document.getElementById('drop-zone');
-        const placeholder    = document.getElementById('drop-placeholder');
-        const previewCont    = document.getElementById('preview-container');
-        const previewImg     = document.getElementById('preview-img');
-        const previewName    = document.getElementById('preview-name');
-
-        fotoInput.addEventListener('change', function () {
-            tampilkanPreview(this.files[0]);
-        });
-
-        // Drag & Drop
-        dropZone.addEventListener('dragover', function (e) {
-            e.preventDefault();
-            this.classList.add('drag-over');
-        });
-
-        dropZone.addEventListener('dragleave', function () {
-            this.classList.remove('drag-over');
-        });
-
-        dropZone.addEventListener('drop', function (e) {
-            e.preventDefault();
-            this.classList.remove('drag-over');
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                fotoInput.files = dataTransfer.files;
-                tampilkanPreview(file);
+            function gagal() {
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-400 flex-shrink-0"></span> Gagal mendeteksi lokasi. Pastikan GPS aktif dan izin diberikan.';
+                statusEl.classList.remove('text-gray-400');
+                statusEl.classList.add('text-red-400');
+                ikonEl.innerHTML = '<svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+                ikonEl.classList.add('bg-red-500/10');
+                ikonEl.classList.remove('bg-gray-800');
             }
-        });
 
-        function tampilkanPreview(file) {
-            if (!file) return;
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Ukuran file terlalu besar. Maksimal 5MB.');
-                return;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(berhasil, gagal, { timeout: 10000 });
+            } else {
+                gagal();
             }
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                previewImg.src = e.target.result;
-                previewName.textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
-                placeholder.classList.add('hidden');
-                previewCont.classList.remove('hidden');
-                updateProgress();
-            };
-            reader.readAsDataURL(file);
-        }
 
-        function hapusFoto() {
-            fotoInput.value = '';
-            previewImg.src = '#';
-            previewName.textContent = '';
-            placeholder.classList.remove('hidden');
-            previewCont.classList.add('hidden');
-            updateProgress();
-        }
+            var inputFoto = document.getElementById('inputFoto');
+            var pratinjau = document.getElementById('pratinjauFoto');
+            var ikonUpload = document.getElementById('ikonUpload');
 
-        // =============================================
-        // Progress Bar & Char Counter
-        // =============================================
-        const deskripsiInput = document.getElementById('deskripsi');
-        const charCount      = document.getElementById('char-count');
+            inputFoto.addEventListener('change', function() {
+                var berkas = this.files[0];
+                if (!berkas) return;
+                var pembaca = new FileReader();
+                pembaca.onload = function(e) {
+                    pratinjau.src = e.target.result;
+                    pratinjau.classList.remove('hidden');
+                    pratinjau.style.opacity = '1';
+                    ikonUpload.classList.add('hidden');
+                };
+                pembaca.readAsDataURL(berkas);
+            });
 
-        deskripsiInput.addEventListener('input', function () {
-            charCount.textContent = this.value.length + ' / 1000';
-            updateProgress();
-        });
+            function salinKode() {
+                var kode = document.getElementById('kodeTracking').innerText;
+                navigator.clipboard.writeText(kode);
+            }
 
-        document.querySelectorAll('input[name="jenis_laporan"]').forEach(el => {
-            el.addEventListener('change', updateProgress);
-        });
-
-        document.getElementById('alamat').addEventListener('input', updateProgress);
-
-        function updateProgress() {
-            let score = 0;
-            if (document.querySelector('input[name="jenis_laporan"]:checked')) score += 25;
-            if (deskripsiInput.value.trim().length > 10) score += 25;
-            if (document.getElementById('latitude').value) score += 25;
-            if (document.getElementById('alamat').value.trim().length > 3) score += 25;
-            document.getElementById('progress-bar').style.width = score + '%';
-        }
-
-        // Submit loading state
-        document.getElementById('form-laporan').addEventListener('submit', function () {
-            const btn = document.getElementById('btn-submit');
-            btn.disabled = true;
-            btn.innerHTML = `
-                <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                </svg>
-                Mengirim Laporan...
-            `;
-        });
+            window.salinKode = salinKode;
+        })();
     </script>
+
 </body>
 </html>
