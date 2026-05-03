@@ -64,4 +64,15 @@ class LaporanController extends Controller
         return view('laporan.lacak');
     }
 
+    public function prosesCariLaporan(Request $request)
+    {
+        $request->validate([
+            'tracking_id' => ['required', 'string'],
+        ]);
+
+        $kodeLacak    = Str::upper(trim($request->input('tracking_id')));
+        $dataLaporan  = LaporanInfrastruktur::where('tracking_id', $kodeLacak)->first();
+
+        return view('laporan.lacak', compact('dataLaporan', 'kodeLacak'));
+    }
 }
