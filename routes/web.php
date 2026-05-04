@@ -9,7 +9,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('beranda');
 
-// SIGAP-17 Routing Pelaporan Kejahatan dan Lacak
+// SIGAP-23 Routing Pelaporan Kejahatan dan Lacak
 Route::get('/lapor', [LaporanController::class, 'tampilkanFormLapor'])->name('lapor');
 Route::post('/lapor', [LaporanController::class, 'prosesSimpanLaporan'])->name('proses.laporan');
 
