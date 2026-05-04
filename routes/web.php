@@ -28,3 +28,18 @@ Route::middleware('guest')->group(function () {
     Route::get('/daftar', [OtentikasiController::class, 'tampilkanDaftar'])->name('daftar');
     Route::post('/daftar', [OtentikasiController::class, 'prosesDaftar'])->name('proses.daftar');
 });
+
+Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'tampilkanBeranda'])->name('beranda');
+    Route::get('/laporan', [AdminController::class, 'tampilkanDaftarLaporan'])->name('laporan.indeks');
+    Route::get('/laporan/{id}', [AdminController::class, 'tampilkanDetailLaporan'])->name('laporan.detail');
+    Route::patch('/laporan/{id}', [AdminController::class, 'perbaruiStatusLaporan'])->name('laporan.perbarui');
+    Route::get('/keuangan', [PengajuanDanaController::class, 'tampilkanDaftarPengajuan'])->name('keuangan.indeks');
+    Route::post('/pengajuan', [PengajuanDanaController::class, 'simpanPengajuan'])->name('pengajuan.simpan');
+    Route::post('/pengajuan/{id}/proses', [PengajuanDanaController::class, 'prosesPersetujuan'])->name('pengajuan.proses');
+    Route::get('/peta', [AdminController::class, 'tampilkanPeta'])->name('peta.indeks');
+    Route::get('/api/titik-kejahatan', [AdminController::class, 'ambilDataTitikKejahatan'])->name('api.titik-kejahatan');
+    Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar');
+});
+
+Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar')->middleware('auth');
