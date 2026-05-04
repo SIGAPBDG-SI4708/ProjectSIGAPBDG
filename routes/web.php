@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\OtentikasiController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LaporanController;
 
 // [SIGAP-17] Routing Awal - Halaman Utama
 Route::get('/', function () {
