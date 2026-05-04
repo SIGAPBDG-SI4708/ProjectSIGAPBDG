@@ -177,7 +177,7 @@
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(berhasil, gagal, { timeout: 10000 });
             } else {
-                gagal();
+                gagal();    
             }
 
             var inputFoto = document.getElementById('inputFoto');
