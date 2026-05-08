@@ -170,9 +170,9 @@
                         <label for="statusBaru" class="block text-xs text-gray-400 font-medium mb-2">Pilih Status Baru</label>
                         <select name="status" id="statusBaru"
                             class="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none cursor-pointer">
-                            <option value="Menunggu" {{ $dataLaporan->status === 'Menunggu' ? 'selected' : '' }}>⏳ Menunggu</option>
-                            <option value="Proses"   {{ $dataLaporan->status === 'Proses'   ? 'selected' : '' }}>🔄 Proses</option>
-                            <option value="Selesai"  {{ $dataLaporan->status === 'Selesai'  ? 'selected' : '' }}>✅ Selesai</option>
+                            <option value="Menunggu" {{ $dataLaporan->status === 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
+                            <option value="Proses"   {{ $dataLaporan->status === 'Proses'   ? 'selected' : '' }}>Proses</option>
+                            <option value="Selesai"  {{ $dataLaporan->status === 'Selesai'  ? 'selected' : '' }}>Selesai</option>
                         </select>
                     </div>
 

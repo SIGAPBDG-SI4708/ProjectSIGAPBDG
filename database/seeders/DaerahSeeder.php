@@ -9,14 +9,21 @@ class DaerahSeeder extends Seeder
 {
     public function run(): void
     {
-        Daerah::create([
-            'nama_daerah' => 'Cicendo',
-            'tingkat' => 'Kecamatan',
-        ]);
+        $daftarKecamatan = [
+            'Andir', 'Antapani', 'Arcamanik', 'Astanaanyar', 'Babakan Ciparay',
+            'Bandung Kidul', 'Bandung Kulon', 'Bandung Wetan', 'Batununggal',
+            'Bojongloa Kaler', 'Bojongloa Kidul', 'Buahbatu', 'Cibeunying Kaler',
+            'Cibeunying Kidul', 'Cibiru', 'Cicendo', 'Cidadap', 'Cinambo',
+            'Coblong', 'Gedebage', 'Kiaracondong', 'Lengkong', 'Mandalajati',
+            'Panyileukan', 'Rancasari', 'Regol', 'Sukajadi', 'Sukasari',
+            'Sumur Bandung', 'Ujungberung',
+        ];
 
-        Daerah::create([
-            'nama_daerah' => 'Coblong',
-            'tingkat' => 'Kecamatan',
-        ]);
+        foreach ($daftarKecamatan as $namaKecamatan) {
+            Daerah::create([
+                'nama_daerah' => $namaKecamatan,
+                'tingkat'     => 'Kecamatan',
+            ]);
+        }
     }
 }
