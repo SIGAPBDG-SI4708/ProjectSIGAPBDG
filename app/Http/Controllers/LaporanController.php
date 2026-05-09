@@ -24,6 +24,13 @@ class LaporanController extends Controller
             'longitude' => ['required', 'numeric'],
         ]);
 
+        $nilaiHash       = md5_file($request->file('foto')->path());
+        $laporanDuplikat = LaporanInfrastruktur::where('hash_foto', $nilaiHash)->first();
+
+        if ($laporanDuplikat) {
+            return back()->withErrors(['foto' => 'Laporan ditolak: Foto ini sudah pernah digunakan untuk melapor sebelumnya!'])->withInput();
+        }
+
         $fotoAwal         = $request->file('foto')->store('laporan', 'public');
         $trackingId       = 'SIGAP-' . Str::upper(Str::random(6));
         $idDaerahTerpilih = 1;
@@ -66,6 +73,7 @@ class LaporanController extends Controller
             'latitude'    => $request->input('latitude'),
             'longitude'   => $request->input('longitude'),
             'foto_awal'   => $fotoAwal,
+            'hash_foto'   => $nilaiHash,
             'status'      => 'Menunggu',
         ]);
 
