@@ -6,6 +6,7 @@ use App\Models\Daerah;
 use App\Models\LaporanInfrastruktur;
 use App\Models\LaporanKejahatan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class LaporanController extends Controller
@@ -23,20 +24,60 @@ class LaporanController extends Controller
             'longitude' => ['required', 'numeric'],
         ]);
 
-        $fotoAwal  = $request->file('foto')->store('laporan', 'public');
-        $trackingId = 'SIGAP-' . Str::upper(Str::random(6));
-        $idDaerahAcak = Daerah::inRandomOrder()->value('id');
+        $nilaiHash       = md5_file($request->file('foto')->path());
+        $laporanDuplikat = LaporanInfrastruktur::where('hash_foto', $nilaiHash)->first();
+
+        if ($laporanDuplikat) {
+            return back()->withErrors(['foto' => 'Laporan ditolak: Foto ini sudah pernah digunakan untuk melapor sebelumnya!'])->withInput();
+        }
+
+        $fotoAwal         = $request->file('foto')->store('laporan', 'public');
+        $trackingId       = 'SIGAP-' . Str::upper(Str::random(6));
+        $idDaerahTerpilih = 1;
+
+        try {
+            $nilaiLatitude  = $request->input('latitude');
+            $nilaiLongitude = $request->input('longitude');
+
+            $responsApi = Http::withHeaders(['User-Agent' => 'SigapBdgApp/1.0 (student project)'])
+                ->get("https://nominatim.openstreetmap.org/reverse?format=json&lat={$nilaiLatitude}&lon={$nilaiLongitude}");
+
+            $dataPeta   = $responsApi->json();
+            $alamatPeta = $dataPeta['address'] ?? [];
+
+            $namaKecamatanApi = $alamatPeta['subdistrict']
+                ?? $alamatPeta['town']
+                ?? $alamatPeta['city_district']
+                ?? $alamatPeta['suburb']
+                ?? $alamatPeta['village']
+                ?? null;
+
+            if ($namaKecamatanApi) {
+                $namaKecamatanApi = str_replace('Kecamatan ', '', $namaKecamatanApi);
+                $namaKecamatanApi = str_replace('Kelurahan ', '', $namaKecamatanApi);
+                $namaKecamatanApi = str_replace(' ', '', $namaKecamatanApi);
+
+                $kecamatanDitemukan = Daerah::whereRaw("REPLACE(nama_daerah, ' ', '') LIKE ?", ['%' . $namaKecamatanApi . '%'])->first();
+
+                if ($kecamatanDitemukan) {
+                    $idDaerahTerpilih = $kecamatanDitemukan->id;
+                }
+            }
+        } catch (\Exception $e) {
+            $idDaerahTerpilih = 1;
+        }
 
         $laporanBaru = LaporanInfrastruktur::create([
-            'id_daerah'   => $idDaerahAcak,
+            'id_daerah'   => $idDaerahTerpilih,
             'tracking_id' => $trackingId,
             'latitude'    => $request->input('latitude'),
             'longitude'   => $request->input('longitude'),
             'foto_awal'   => $fotoAwal,
+            'hash_foto'   => $nilaiHash,
             'status'      => 'Menunggu',
         ]);
 
-        \App\Services\LayananSimulasiAi::prosesAnalisis($laporanBaru->id);
+        \App\Services\LayananSimulasiAi::prosesAnalisis($laporanBaru->id, $fotoAwal);
 
         return back()->with('trackingBerhasil', $trackingId);
     }
@@ -48,10 +89,8 @@ class LaporanController extends Controller
             'longitude' => ['required', 'numeric'],
         ]);
 
-        $idDaerahAcak = Daerah::inRandomOrder()->value('id');
-
         LaporanKejahatan::create([
-            'id_daerah' => $idDaerahAcak,
+            'id_daerah' => 1,
             'latitude'  => $request->input('latitude'),
             'longitude' => $request->input('longitude'),
         ]);
@@ -70,8 +109,8 @@ class LaporanController extends Controller
             'tracking_id' => ['required', 'string'],
         ]);
 
-        $kodeLacak    = Str::upper(trim($request->input('tracking_id')));
-        $dataLaporan  = LaporanInfrastruktur::where('tracking_id', $kodeLacak)->first();
+        $kodeLacak   = Str::upper(trim($request->input('tracking_id')));
+        $dataLaporan = LaporanInfrastruktur::where('tracking_id', $kodeLacak)->first();
 
         return view('laporan.lacak', compact('dataLaporan', 'kodeLacak'));
     }
