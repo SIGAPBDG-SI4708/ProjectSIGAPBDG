@@ -39,6 +39,7 @@ class LaporanController extends Controller
             $alamatPeta = $dataPeta['address'] ?? [];
 
             $namaKecamatanApi = $alamatPeta['subdistrict']
+                ?? $alamatPeta['town']
                 ?? $alamatPeta['city_district']
                 ?? $alamatPeta['suburb']
                 ?? $alamatPeta['village']
