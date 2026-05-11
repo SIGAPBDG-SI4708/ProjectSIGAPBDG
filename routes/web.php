@@ -6,12 +6,10 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PengajuanDanaController;
 
-// [SIGAP-17] Routing Awal - Halaman Utama
 Route::get('/', function () {
     return view('welcome');
 })->name('beranda');
 
-// SIGAP-23 Routing Pelaporan Kejahatan dan Lacak
 Route::get('/lapor', [LaporanController::class, 'tampilkanFormLapor'])->name('lapor');
 Route::post('/lapor', [LaporanController::class, 'prosesSimpanLaporan'])->name('proses.laporan');
 
@@ -20,13 +18,10 @@ Route::post('/lacak', [LaporanController::class, 'prosesCariLaporan'])->name('pr
 
 Route::post('/lapor-kejahatan', [LaporanController::class, 'simpanKejahatan'])->name('lapor.kejahatan');
 
-// [SIGAP-17] Routing Autentikasi (Login & Register)
-Route::middleware('guest')->group(function () {
-    // Login
-    Route::get('/masuk', [OtentikasiController::class, 'tampilkanMasuk'])->name('masuk');
-    Route::post('/masuk', [OtentikasiController::class, 'prosesMasuk'])->name('proses.masuk');
-    
-    // Register (Daftar)
+Route::prefix('portal-internal')->middleware('guest')->group(function () {
+    Route::get('/', [OtentikasiController::class, 'tampilkanSambutan'])->name('sambutan');
+    Route::get('/login', [OtentikasiController::class, 'tampilkanMasuk'])->name('masuk');
+    Route::post('/login', [OtentikasiController::class, 'prosesMasuk'])->name('proses.masuk');
     Route::get('/daftar', [OtentikasiController::class, 'tampilkanDaftar'])->name('daftar');
     Route::post('/daftar', [OtentikasiController::class, 'prosesDaftar'])->name('proses.daftar');
 });
@@ -39,6 +34,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/keuangan', [PengajuanDanaController::class, 'tampilkanDaftarPengajuan'])->name('keuangan.indeks');
     Route::post('/pengajuan', [PengajuanDanaController::class, 'simpanPengajuan'])->name('pengajuan.simpan');
     Route::post('/pengajuan/{id}/proses', [PengajuanDanaController::class, 'prosesPersetujuan'])->name('pengajuan.proses');
+    Route::post('/pengajuan/{id}/ajukan-ulang', [PengajuanDanaController::class, 'ajukanUlang'])->name('pengajuan.ajukan-ulang');
     Route::get('/peta', [AdminController::class, 'tampilkanPeta'])->name('peta.indeks');
     Route::get('/api/titik-kejahatan', [AdminController::class, 'ambilDataTitikKejahatan'])->name('api.titik-kejahatan');
     Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar');

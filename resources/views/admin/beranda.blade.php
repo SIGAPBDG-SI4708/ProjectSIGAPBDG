@@ -1,105 +1,108 @@
 @extends('admin.layout')
 
 @section('judulHalaman', 'Beranda')
-@section('subjudulHalaman', 'Ringkasan aktivitas laporan wilayah Anda')
+@section('subjudulHalaman', 'Ringkasan aktivitas laporan di wilayah Anda')
 
 @section('konten')
 <div class="space-y-6">
 
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-gray-900 border border-white/5 rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-                <div class="text-xs text-gray-500 font-medium uppercase tracking-wider">Total Laporan</div>
-                <div class="w-8 h-8 bg-indigo-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-start justify-between mb-4">
+                <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </div>
             </div>
-            <div class="text-3xl font-black text-white">{{ $totalLaporan }}</div>
+            <div class="text-3xl font-extrabold text-slate-900 dark:text-white">{{ $totalLaporan }}</div>
+            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 font-medium">Total Laporan</div>
         </div>
 
-        <div class="bg-gray-900 border border-white/5 rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-                <div class="text-xs text-gray-500 font-medium uppercase tracking-wider">Menunggu</div>
-                <div class="w-8 h-8 bg-yellow-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-start justify-between mb-4">
+                <div class="w-10 h-10 bg-amber-50 dark:bg-amber-900/20 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
             </div>
-            <div class="text-3xl font-black text-yellow-400">{{ $totalMenunggu }}</div>
+            <div class="text-3xl font-extrabold text-amber-500">{{ $totalMenunggu }}</div>
+            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 font-medium">Menunggu</div>
         </div>
 
-        <div class="bg-gray-900 border border-white/5 rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-                <div class="text-xs text-gray-500 font-medium uppercase tracking-wider">Proses</div>
-                <div class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-start justify-between mb-4">
+                <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 </div>
             </div>
-            <div class="text-3xl font-black text-blue-400">{{ $totalProses }}</div>
+            <div class="text-3xl font-extrabold text-blue-500">{{ $totalProses }}</div>
+            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 font-medium">Diproses</div>
         </div>
 
-        <div class="bg-gray-900 border border-white/5 rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-                <div class="text-xs text-gray-500 font-medium uppercase tracking-wider">Selesai</div>
-                <div class="w-8 h-8 bg-green-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
+            <div class="flex items-start justify-between mb-4">
+                <div class="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
             </div>
-            <div class="text-3xl font-black text-green-400">{{ $totalSelesai }}</div>
+            <div class="text-3xl font-extrabold text-emerald-500">{{ $totalSelesai }}</div>
+            <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 font-medium">Selesai</div>
         </div>
     </div>
 
-    <div class="bg-gray-900 border border-white/5 rounded-2xl overflow-hidden">
-        <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+        <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div>
-                <div class="text-sm font-bold text-white">Laporan Terbaru</div>
-                <div class="text-xs text-gray-500 mt-0.5">5 laporan infrastruktur terkini</div>
+                <div class="text-sm font-bold text-slate-800 dark:text-white">Laporan Terbaru</div>
+                <div class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">5 laporan infrastruktur terkini</div>
             </div>
-            <a href="{{ route('admin.laporan.indeks') }}" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold transition flex items-center gap-1">
+            <a href="{{ route('admin.laporan.indeks') }}" class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 font-semibold transition flex items-center gap-1">
                 Lihat semua
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </a>
         </div>
 
         @if($laporanTerbaru->isEmpty())
-        <div class="py-12 text-center">
-            <div class="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <div class="py-14 text-center">
+            <div class="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6 text-slate-400 dark:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
             </div>
-            <div class="text-gray-500 text-sm">Belum ada laporan masuk</div>
+            <div class="text-slate-500 dark:text-slate-400 text-sm font-medium">Belum ada laporan</div>
+            <div class="text-slate-400 dark:text-slate-600 text-xs mt-1">Laporan baru dari warga akan muncul di sini</div>
         </div>
         @else
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="border-b border-white/5">
-                        <th class="text-left text-xs text-gray-500 font-semibold uppercase tracking-wider px-5 py-3">Tracking ID</th>
-                        <th class="text-left text-xs text-gray-500 font-semibold uppercase tracking-wider px-5 py-3">Daerah</th>
-                        <th class="text-left text-xs text-gray-500 font-semibold uppercase tracking-wider px-5 py-3">Status</th>
-                        <th class="text-left text-xs text-gray-500 font-semibold uppercase tracking-wider px-5 py-3">Waktu</th>
+                    <tr class="border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+                        <th class="text-left text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider px-5 py-3">Tracking ID</th>
+                        <th class="text-left text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider px-5 py-3">Daerah</th>
+                        <th class="text-left text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider px-5 py-3">Status</th>
+                        <th class="text-left text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider px-5 py-3">Waktu</th>
                         <th class="px-5 py-3"></th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-white/5">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     @foreach($laporanTerbaru as $laporan)
-                    <tr class="hover:bg-white/[0.02] transition">
-                        <td class="px-5 py-3.5 font-mono text-xs text-indigo-400 font-semibold">{{ $laporan->tracking_id }}</td>
-                        <td class="px-5 py-3.5 text-gray-300 text-xs">{{ $laporan->daerah->nama_daerah ?? '-' }}</td>
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                        <td class="px-5 py-3.5">
+                            <span class="font-mono text-xs text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-lg">{{ $laporan->tracking_id }}</span>
+                        </td>
+                        <td class="px-5 py-3.5 text-slate-600 dark:text-slate-400 text-xs">{{ $laporan->daerah->nama_daerah ?? '-' }}</td>
                         <td class="px-5 py-3.5">
                             <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full
-                                {{ $laporan->status === 'Menunggu' ? 'badge-status-menunggu' : '' }}
-                                {{ $laporan->status === 'Proses'   ? 'badge-status-proses' : '' }}
-                                {{ $laporan->status === 'Selesai'  ? 'badge-status-selesai' : '' }}">
+                                {{ $laporan->status === 'Menunggu' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-800' : '' }}
+                                {{ $laporan->status === 'Proses'   ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800' : '' }}
+                                {{ $laporan->status === 'Selesai'  ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800' : '' }}">
                                 <span class="w-1.5 h-1.5 rounded-full
-                                    {{ $laporan->status === 'Menunggu' ? 'bg-yellow-400 animate-pulse' : '' }}
+                                    {{ $laporan->status === 'Menunggu' ? 'bg-amber-400 animate-pulse' : '' }}
                                     {{ $laporan->status === 'Proses'   ? 'bg-blue-400' : '' }}
-                                    {{ $laporan->status === 'Selesai'  ? 'bg-green-400' : '' }}">
+                                    {{ $laporan->status === 'Selesai'  ? 'bg-emerald-400' : '' }}">
                                 </span>
                                 {{ $laporan->status }}
                             </span>
                         </td>
-                        <td class="px-5 py-3.5 text-gray-500 text-xs">{{ $laporan->created_at->diffForHumans() }}</td>
+                        <td class="px-5 py-3.5 text-slate-400 dark:text-slate-500 text-xs">{{ $laporan->created_at->diffForHumans() }}</td>
                         <td class="px-5 py-3.5">
-                            <a href="{{ route('admin.laporan.detail', $laporan->id) }}" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium transition">Detail →</a>
+                            <a href="{{ route('admin.laporan.detail', $laporan->id) }}" class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 font-semibold transition">Detail →</a>
                         </td>
                     </tr>
                     @endforeach

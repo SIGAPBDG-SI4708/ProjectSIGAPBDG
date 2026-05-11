@@ -192,44 +192,120 @@
             </div>
 
             @if(Auth::user()->role === 'Admin Daerah' && $dataLaporan->analisisAi && !$dataLaporan->analisisAi->is_spam)
-            <div class="bg-gray-900 border border-orange-500/20 rounded-2xl p-5">
-                <div class="flex items-center gap-2 mb-1">
+            @php
+                $pengajuanTerkini = $dataLaporan->pengajuanDana->sortByDesc('waktu_pengajuan')->first();
+            @endphp
+            <div x-data="{ bukaModal: false, nominalInput: '' }" class="bg-gray-900 border border-orange-500/20 rounded-2xl p-5">
+                <div class="flex items-center gap-2 mb-3">
                     <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <div class="text-sm font-bold text-white">Ajukan Dana Perbaikan</div>
+                    <div class="text-sm font-bold text-white">Pengajuan Dana Perbaikan</div>
                 </div>
-                <div class="text-xs text-gray-500 mb-4">Masukkan estimasi nominal dana yang dibutuhkan untuk perbaikan</div>
 
-                <form action="{{ route('admin.pengajuan.simpan') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="id_laporan" value="{{ $dataLaporan->id }}">
-
-                    <div class="mb-4">
-                        <label for="nominalDiajukan" class="block text-xs text-gray-400 font-medium mb-2">Nominal Dana (Rp)</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-semibold">Rp</span>
-                            <input
-                                type="number"
-                                id="nominalDiajukan"
-                                name="nominal_diajukan"
-                                min="1"
-                                step="1000"
-                                placeholder="0"
-                                class="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
-                            >
-                        </div>
-                        @error('nominal_diajukan')
-                        <div class="mt-1.5 text-xs text-red-400">{{ $message }}</div>
-                        @enderror
+                @if(!$pengajuanTerkini)
+                <p class="text-xs text-gray-500 mb-4">Belum ada pengajuan dana untuk laporan ini.</p>
+                <button type="button" @click="bukaModal = true" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    Ajukan Dana
+                </button>
+                @elseif(in_array($pengajuanTerkini->status_approval, ['Menunggu', 'Proses']))
+                <div class="flex items-center gap-2.5 bg-yellow-500/10 border border-yellow-500/20 rounded-xl px-4 py-3">
+                    <span class="w-2 h-2 rounded-full bg-yellow-400 animate-pulse flex-shrink-0"></span>
+                    <div>
+                        <div class="text-yellow-400 font-bold text-sm">Dana sedang dalam proses pengajuan</div>
+                        <div class="text-yellow-400/60 text-xs mt-0.5">Nominal: Rp {{ number_format($pengajuanTerkini->nominal_diajukan, 0, ',', '.') }} · Menunggu Super Admin</div>
                     </div>
+                </div>
+                @elseif($pengajuanTerkini->status_approval === 'Disetujui')
+                <div class="flex items-center gap-2.5 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
+                    <svg class="w-5 h-5 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <div>
+                        <div class="text-green-400 font-bold text-sm">Dana telah disetujui</div>
+                        <div class="text-green-400/60 text-xs mt-0.5">Nominal: Rp {{ number_format($pengajuanTerkini->nominal_diajukan, 0, ',', '.') }}</div>
+                    </div>
+                </div>
+                @elseif($pengajuanTerkini->status_approval === 'Ditolak')
+                <div class="flex items-center gap-2.5 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 mb-3">
+                    <svg class="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <div>
+                        <div class="text-red-400 font-bold text-sm">Pengajuan ditolak Super Admin</div>
+                        <div class="text-red-400/60 text-xs mt-0.5">Nominal sebelumnya: Rp {{ number_format($pengajuanTerkini->nominal_diajukan, 0, ',', '.') }}</div>
+                    </div>
+                </div>
+                <button type="button" @click="bukaModal = true" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Ajukan Ulang Dana
+                </button>
+                @endif
 
-                    <button type="submit" class="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-                        Kirim Pengajuan Dana
-                    </button>
-                </form>
+                <div
+                    x-show="bukaModal"
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                    style="display: none;"
+                    @click.self="bukaModal = false"
+                >
+                    <div
+                        x-show="bukaModal"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="bg-gray-900 border border-white/10 rounded-2xl p-6 w-full max-w-sm mx-4 shadow-2xl"
+                    >
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="font-bold text-white text-base">
+                                @if($pengajuanTerkini && $pengajuanTerkini->status_approval === 'Ditolak')
+                                Ajukan Ulang Dana
+                                @else
+                                Ajukan Dana Perbaikan
+                                @endif
+                            </div>
+                            <button @click="bukaModal = false" class="text-gray-500 hover:text-white transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        </div>
 
-                <div class="mt-4 pt-4 border-t border-white/5">
-                    <div class="text-xs text-gray-600 text-center">Pengajuan akan diteruskan ke Super Admin untuk disetujui</div>
+                        @if($pengajuanTerkini && $pengajuanTerkini->status_approval === 'Ditolak')
+                        <form @submit.prevent="if(nominalInput > 0) { $el.submit() }" action="{{ route('admin.pengajuan.ajukan-ulang', $pengajuanTerkini->id) }}" method="POST">
+                        @else
+                        <form @submit.prevent="if(nominalInput > 0) { $el.submit() }" action="{{ route('admin.pengajuan.simpan') }}" method="POST">
+                            <input type="hidden" name="id_laporan" value="{{ $dataLaporan->id }}">
+                        @endif
+                            @csrf
+                            <div class="mb-4">
+                                <label class="block text-xs text-gray-400 font-medium mb-2">Nominal Dana yang Dibutuhkan (Rp)</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 font-semibold">Rp</span>
+                                    <input
+                                        type="number"
+                                        name="nominal_diajukan"
+                                        x-model="nominalInput"
+                                        min="1"
+                                        step="1000"
+                                        placeholder="0"
+                                        class="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-xl pl-10 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition"
+                                        required
+                                    >
+                                </div>
+                                <div x-show="nominalInput !== '' && nominalInput <= 0" class="mt-1.5 text-xs text-red-400">Nominal harus lebih dari 0</div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="button" @click="bukaModal = false" class="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold text-sm py-2.5 rounded-xl transition">Batal</button>
+                                <button type="submit" class="flex-1 bg-orange-600 hover:bg-orange-500 text-white font-bold text-sm py-2.5 rounded-xl transition">Kirim Pengajuan</button>
+                            </div>
+                        </form>
+
+                        <div class="mt-4 pt-4 border-t border-white/5 text-center">
+                            <div class="text-xs text-gray-600">Pengajuan diteruskan ke Super Admin untuk disetujui</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             @endif

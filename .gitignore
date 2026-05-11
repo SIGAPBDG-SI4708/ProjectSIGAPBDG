@@ -25,5 +25,4 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 docs/
-.env.example
 .env.production_nouse
