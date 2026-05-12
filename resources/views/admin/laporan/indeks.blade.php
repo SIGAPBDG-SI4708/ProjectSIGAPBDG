@@ -42,7 +42,7 @@
                 @foreach($daftarLaporan as $laporan)
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
                     <td class="px-5 py-4">
-                        <span class="font-mono text-xs text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-lg">{{ $laporan->tracking_id }}</span>
+                        <span class="font-mono text-xs text-brand-600 dark:text-brand-400 font-bold bg-brand-50 dark:bg-brand-900/30 px-2 py-1 rounded-lg">{{ $laporan->tracking_id }}</span>
                     </td>
                     <td class="px-5 py-4">
                         <div class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ $laporan->daerah->nama_daerah ?? 'Tidak diketahui' }}</div>
@@ -55,11 +55,11 @@
                     <td class="px-5 py-4">
                         <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full
                             {{ $laporan->status === 'Menunggu' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-800/50' : '' }}
-                            {{ $laporan->status === 'Proses'   ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50' : '' }}
+                            {{ $laporan->status === 'Proses'   ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 border border-brand-100 dark:border-brand-800/50' : '' }}
                             {{ $laporan->status === 'Selesai'  ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800/50' : '' }}">
                             <span class="w-1.5 h-1.5 rounded-full
                                 {{ $laporan->status === 'Menunggu' ? 'bg-amber-400 animate-pulse' : '' }}
-                                {{ $laporan->status === 'Proses'   ? 'bg-blue-400' : '' }}
+                                {{ $laporan->status === 'Proses'   ? 'bg-brand-400' : '' }}
                                 {{ $laporan->status === 'Selesai'  ? 'bg-emerald-400' : '' }}">
                             </span>
                             {{ $laporan->status }}
@@ -71,7 +71,7 @@
                     </td>
                     <td class="px-5 py-4">
                         <a href="{{ route('admin.laporan.detail', $laporan->id) }}"
-                           class="inline-flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:text-white hover:bg-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 font-semibold px-3 py-1.5 rounded-xl transition">
+                           class="inline-flex items-center gap-1.5 text-xs text-brand-600 dark:text-brand-400 hover:text-white hover:bg-brand-600 bg-brand-50 dark:bg-brand-900/30 font-semibold px-3 py-1.5 rounded-xl transition">
                             Detail
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>

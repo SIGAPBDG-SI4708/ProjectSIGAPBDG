@@ -79,7 +79,7 @@
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
                         <td class="px-5 py-4">
                             <a href="{{ route('admin.laporan.detail', $pengajuan->laporanInfrastruktur->id ?? '#') }}"
-                               class="font-mono text-xs text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition">
+                               class="font-mono text-xs text-brand-600 dark:text-brand-400 font-bold bg-brand-50 dark:bg-brand-900/30 px-2 py-1 rounded-lg hover:bg-brand-100 dark:hover:bg-brand-900/50 transition">
                                 {{ $pengajuan->laporanInfrastruktur->tracking_id ?? 'N/A' }}
                             </a>
                         </td>

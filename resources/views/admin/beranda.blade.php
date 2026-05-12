@@ -9,8 +9,8 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <div class="flex items-start justify-between mb-4">
-                <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center">
-                    <svg class="w-5 h-5 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </div>
             </div>
             <div class="text-3xl font-extrabold text-slate-900 dark:text-white">{{ $totalLaporan }}</div>
@@ -29,11 +29,11 @@
 
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
             <div class="flex items-start justify-between mb-4">
-                <div class="w-10 h-10 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
-                    <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                <div class="w-10 h-10 bg-brand-50 dark:bg-brand-900/20 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 </div>
             </div>
-            <div class="text-3xl font-extrabold text-blue-500">{{ $totalProses }}</div>
+            <div class="text-3xl font-extrabold text-brand-500">{{ $totalProses }}</div>
             <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 font-medium">Diproses</div>
         </div>
 
@@ -54,7 +54,7 @@
                 <div class="text-sm font-bold text-slate-800 dark:text-white">Laporan Terbaru</div>
                 <div class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">5 laporan infrastruktur terkini</div>
             </div>
-            <a href="{{ route('admin.laporan.indeks') }}" class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 font-semibold transition flex items-center gap-1">
+            <a href="{{ route('admin.laporan.indeks') }}" class="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold transition flex items-center gap-1">
                 Lihat semua
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </a>
@@ -84,17 +84,17 @@
                     @foreach($laporanTerbaru as $laporan)
                     <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
                         <td class="px-5 py-3.5">
-                            <span class="font-mono text-xs text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-900/30 px-2 py-1 rounded-lg">{{ $laporan->tracking_id }}</span>
+                            <span class="font-mono text-xs text-brand-600 dark:text-brand-400 font-bold bg-brand-50 dark:bg-brand-900/30 px-2 py-1 rounded-lg">{{ $laporan->tracking_id }}</span>
                         </td>
                         <td class="px-5 py-3.5 text-slate-600 dark:text-slate-400 text-xs">{{ $laporan->daerah->nama_daerah ?? '-' }}</td>
                         <td class="px-5 py-3.5">
                             <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full
                                 {{ $laporan->status === 'Menunggu' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-800' : '' }}
-                                {{ $laporan->status === 'Proses'   ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800' : '' }}
+                                {{ $laporan->status === 'Proses'   ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 border border-brand-100 dark:border-brand-800' : '' }}
                                 {{ $laporan->status === 'Selesai'  ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800' : '' }}">
                                 <span class="w-1.5 h-1.5 rounded-full
                                     {{ $laporan->status === 'Menunggu' ? 'bg-amber-400 animate-pulse' : '' }}
-                                    {{ $laporan->status === 'Proses'   ? 'bg-blue-400' : '' }}
+                                    {{ $laporan->status === 'Proses'   ? 'bg-brand-400' : '' }}
                                     {{ $laporan->status === 'Selesai'  ? 'bg-emerald-400' : '' }}">
                                 </span>
                                 {{ $laporan->status }}
@@ -102,7 +102,7 @@
                         </td>
                         <td class="px-5 py-3.5 text-slate-400 dark:text-slate-500 text-xs">{{ $laporan->created_at->diffForHumans() }}</td>
                         <td class="px-5 py-3.5">
-                            <a href="{{ route('admin.laporan.detail', $laporan->id) }}" class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 font-semibold transition">Detail →</a>
+                            <a href="{{ route('admin.laporan.detail', $laporan->id) }}" class="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold transition">Detail →</a>
                         </td>
                     </tr>
                     @endforeach

@@ -6,7 +6,22 @@
     <title>Portal Pegawai — SIGAP BDG</title>
     <meta name="description" content="Portal internal pegawai dan administrator SIGAP BDG Kota Bandung.">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = { darkMode: 'class' }</script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74', 400: '#fb923c',
+                            500: '#f97316', 600: '#ea580c', 700: '#c2410c', 800: '#9a3412', 900: '#7c2d12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>* { font-family: 'Inter', sans-serif; }</style>
@@ -14,10 +29,10 @@
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
 
     <div class="min-h-screen flex">
-        <div class="hidden lg:flex flex-col justify-between w-[420px] flex-shrink-0 bg-indigo-600 p-10 relative overflow-hidden">
+        <div class="hidden lg:flex flex-col justify-between w-[420px] flex-shrink-0 bg-brand-600 p-10 relative overflow-hidden">
             <div class="absolute inset-0 pointer-events-none">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-white/5 rounded-full"></div>
-                <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-indigo-700/60 rounded-full"></div>
+                <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-brand-700/60 rounded-full"></div>
             </div>
 
             <div class="relative">
@@ -31,7 +46,7 @@
                 <h2 class="text-3xl font-extrabold text-white leading-snug mb-4">
                     Sistem Informasi<br>Pelaporan Publik<br>Kota Bandung
                 </h2>
-                <p class="text-indigo-200 text-sm leading-relaxed">
+                <p class="text-brand-200 text-sm leading-relaxed">
                     Panel manajemen laporan infrastruktur, analisis AI, dan persetujuan dana perbaikan wilayah.
                 </p>
             </div>
@@ -44,7 +59,7 @@
                         </div>
                         <span class="text-white text-xs font-semibold">Analisis AI Otomatis</span>
                     </div>
-                    <p class="text-indigo-200 text-xs pl-10">Foto laporan dianalisis GPT-4o untuk menentukan tingkat kerusakan dan estimasi biaya.</p>
+                    <p class="text-brand-200 text-xs pl-10">Foto laporan dianalisis GPT-4o untuk menentukan tingkat kerusakan dan estimasi biaya.</p>
                 </div>
                 <div class="bg-white/10 rounded-2xl p-4 border border-white/10">
                     <div class="flex items-center gap-3 mb-1">
@@ -53,34 +68,34 @@
                         </div>
                         <span class="text-white text-xs font-semibold">Pengajuan Dana Terstruktur</span>
                     </div>
-                    <p class="text-indigo-200 text-xs pl-10">Admin daerah mengajukan dana, Super Admin menyetujui atau menolak dengan validasi anggaran.</p>
+                    <p class="text-brand-200 text-xs pl-10">Admin daerah mengajukan dana, Super Admin menyetujui atau menolak dengan validasi anggaran.</p>
                 </div>
                 <div class="bg-white/10 rounded-2xl p-4 border border-white/10">
                     <div class="flex items-center gap-3 mb-1">
-                        <div class="w-7 h-7 bg-blue-400/20 rounded-lg flex items-center justify-center">
-                            <svg class="w-3.5 h-3.5 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276"/></svg>
+                        <div class="w-7 h-7 bg-brand-400/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 text-brand-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276"/></svg>
                         </div>
                         <span class="text-white text-xs font-semibold">Peta Kerawanan Real-time</span>
                     </div>
-                    <p class="text-indigo-200 text-xs pl-10">Visualisasi heatmap titik kejahatan seluruh Kota Bandung untuk analisis keamanan.</p>
+                    <p class="text-brand-200 text-xs pl-10">Visualisasi heatmap titik kejahatan seluruh Kota Bandung untuk analisis keamanan.</p>
                 </div>
 
-                <p class="text-indigo-300 text-xs pt-2">© 2026 SIGAP BDG — Kota Bandung</p>
+                <p class="text-brand-300 text-xs pt-2">© 2026 SIGAP BDG — Kota Bandung</p>
             </div>
         </div>
 
         <div class="flex-1 flex flex-col items-center justify-center px-6 py-12">
             <div class="w-full max-w-sm">
                 <div class="flex items-center gap-2 mb-8 lg:hidden">
-                    <div class="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center">
+                    <div class="w-7 h-7 bg-brand-600 rounded-lg flex items-center justify-center">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     </div>
                     <span class="font-bold text-slate-800 dark:text-white">SIGAP BDG</span>
                 </div>
 
                 <div class="mb-8">
-                    <div class="inline-flex items-center gap-2 bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-700/40 text-indigo-600 dark:text-indigo-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
-                        <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
+                    <div class="inline-flex items-center gap-2 bg-brand-50 dark:bg-brand-900/30 border border-brand-100 dark:border-brand-700/40 text-brand-600 dark:text-brand-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
+                        <span class="w-1.5 h-1.5 bg-brand-500 rounded-full animate-pulse"></span>
                         Portal Pegawai Internal
                     </div>
                     <h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-1.5">Selamat Datang</h1>
@@ -88,7 +103,7 @@
                 </div>
 
                 <div class="space-y-3">
-                    <a href="{{ route('masuk') }}" class="flex items-center justify-center gap-2.5 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30">
+                    <a href="{{ route('masuk') }}" class="flex items-center justify-center gap-2.5 w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-brand-200 dark:shadow-brand-900/30">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
                         Masuk ke Dashboard
                     </a>
