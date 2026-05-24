@@ -8,6 +8,14 @@ use App\Models\User;
 
 class OtentikasiController extends Controller
 {
+    public function tampilkanSambutan()
+    {
+        if (Auth::check()) {
+            return redirect()->route('admin.beranda');
+        }
+        return view('otentikasi.sambutan');
+    }
+
     public function tampilkanMasuk()
     {
         if (Auth::check()) {

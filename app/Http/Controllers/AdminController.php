@@ -59,9 +59,9 @@ class AdminController extends Controller
         $penggunaAktif = Auth::user();
 
         if ($penggunaAktif->role === 'Super Admin') {
-            $dataLaporan = LaporanInfrastruktur::with('daerah', 'analisisAi')->findOrFail($id);
+            $dataLaporan = LaporanInfrastruktur::with('daerah', 'analisisAi', 'pengajuanDana')->findOrFail($id);
         } else {
-            $dataLaporan = LaporanInfrastruktur::with('daerah', 'analisisAi')
+            $dataLaporan = LaporanInfrastruktur::with('daerah', 'analisisAi', 'pengajuanDana')
                 ->where('id_daerah', $penggunaAktif->id_daerah)
                 ->findOrFail($id);
         }

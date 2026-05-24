@@ -1,381 +1,423 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" x-data="{ temaGelap: localStorage.getItem('temaGelap') === 'true' }"
+    x-init="$watch('temaGelap', val => localStorage.setItem('temaGelap', val))" :class="{ 'dark': temaGelap }">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGAP BDG - Sistem Informasi Pelaporan Publik Kota Bandung</title>
-    <meta name="description" content="Laporkan infrastruktur rusak dan kejahatan di Kota Bandung secara mudah, cepat, dan transparan. Bersama kita jaga Bandung.">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SIGAP BDG - Lapor Cepat & Tanggap</title>
+
+    <meta name="theme-color" content="#f97316">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SIGAP BDG">
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=SIGAP+BDG&background=f97316&color=fff&size=180">
+    <link rel="shortcut icon" href="https://ui-avatars.com/api/?name=SB&background=f97316&color=fff&size=32">
+
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        * { font-family: 'Inter', sans-serif; }
-        .gradient-text {
-            background: linear-gradient(135deg, #60a5fa, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        .hero-glow {
-            background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.35) 0%, transparent 70%);
+
+        html {
+            scroll-behavior: smooth;
         }
-        .card-hover {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        .animate-float {
+            animation: efekMengapung 3.5s ease-in-out infinite;
         }
-        .card-hover:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-        }
-        .btn-primary {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99,102,241,0.5);
-        }
-        .floating {
-            animation: float 4s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-        .dot-pattern {
-            background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px);
-            background-size: 28px 28px;
-        }
-        .step-line::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 100%;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, #4f46e5, transparent);
+
+        @keyframes efekMengapung {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-18px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
         }
     </style>
 </head>
-<body class="bg-gray-950 text-white overflow-x-hidden">
 
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
+<body class="bg-stone-50 dark:bg-slate-950 text-stone-800 dark:text-slate-100 transition-colors duration-300">
+
+    <nav
+        class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-stone-100 dark:border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight text-stone-900 dark:text-white">SIGAP<span
+                            class="text-brand-500">BDG</span></span>
                 </div>
-                <span class="font-bold text-white text-lg tracking-tight">SIGAP <span class="text-indigo-400">BDG</span></span>
-            </div>
-            <div class="hidden md:flex items-center gap-8 text-sm text-gray-400">
-                <a href="#fitur" class="hover:text-white transition">Fitur</a>
-                <a href="#cara-kerja" class="hover:text-white transition">Cara Kerja</a>
-                <a href="{{ route('lapor') }}" class="hover:text-white transition text-orange-400">Lapor Sekarang</a>
-                <a href="{{ route('lacak') }}" class="hover:text-white transition">Lacak Laporan</a>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="{{ route('masuk') }}" class="text-sm text-gray-300 hover:text-white transition font-medium px-3 py-1.5">
-                    Masuk Admin
-                </a>
-                <a href="{{ route('masuk') }}" class="text-sm bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 rounded-lg transition btn-primary">
-                    Portal Admin →
-                </a>
+
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#"
+                        class="text-stone-600 dark:text-slate-300 hover:text-brand-500 dark:hover:text-brand-400 font-medium transition">Beranda</a>
+                    <a href="#fitur"
+                        class="text-stone-600 dark:text-slate-300 hover:text-brand-500 dark:hover:text-brand-400 font-medium transition">Layanan</a>
+                    <a href="#cara-kerja"
+                        class="text-stone-600 dark:text-slate-300 hover:text-brand-500 dark:hover:text-brand-400 font-medium transition">Cara
+                        Kerja</a>
+                    <a href="{{ route('lacak') }}"
+                        class="text-stone-600 dark:text-slate-300 hover:text-brand-500 dark:hover:text-brand-400 font-medium transition">Lacak</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-4">
+                    <button @click="temaGelap = !temaGelap"
+                        class="flex items-center justify-center w-10 h-10 rounded-full bg-stone-100 dark:bg-slate-800 text-stone-500 dark:text-slate-400 hover:text-brand-500 transition">
+                        <span x-show="!temaGelap"><svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg></span>
+                        <span x-show="temaGelap"><svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                            </svg></span>
+                    </button>
+                    <a href="{{ route('lapor') }}"
+                        class="bg-brand-500 hover:bg-brand-600 text-white px-6 py-2.5 rounded-full font-semibold transition shadow-md shadow-brand-500/20">Lapor
+                        Sekarang</a>
+                </div>
+
+                <div class="md:hidden flex items-center gap-3">
+                    <button @click="temaGelap = !temaGelap"
+                        class="flex items-center justify-center w-8 h-8 rounded-full bg-stone-100 dark:bg-slate-800 text-stone-500 dark:text-slate-400">
+                        <span x-show="!temaGelap"><svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg></span>
+                        <span x-show="temaGelap"><svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                            </svg></span>
+                    </button>
+                    <button class="text-stone-600 dark:text-slate-300 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <section class="relative min-h-screen flex items-center pt-16 dot-pattern hero-glow">
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
-        </div>
+    <section class="relative pt-16 pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto overflow-hidden">
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-                <div class="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
-                    <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse"></span>
-                    Sistem Aktif — Kota Bandung
-                </div>
-                <h1 class="text-5xl sm:text-6xl font-black leading-tight tracking-tight mb-6">
-                    Bandung Lebih
-                    <br>
-                    <span class="gradient-text">Sigap</span> dengan
-                    <br>
-                    Laporan Warga
+        <img src="{{ asset('images/hero-pelengkap.png') }}" alt="Aset Pelengkap"
+            class="absolute top-10 right-10 w-32 md:w-48 opacity-40 dark:opacity-20 animate-float pointer-events-none"
+            style="animation-delay: 1.5s;">
+
+        <img src="{{ asset('images/gedung_sate.png') }}" alt="Gedung Sate Bandung"
+            class="absolute top-1/2 md:bottom-0 md:top-auto left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0 -translate-y-1/2 md:translate-y-0 w-[24rem] md:w-[32rem] lg:w-[40rem] opacity-20 dark:opacity-10 animate-float pointer-events-none -z-10"
+            style="animation-delay: 2.5s;">
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="text-center lg:text-left order-2 lg:order-1">
+                <h1
+                    class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-stone-900 dark:text-white leading-tight mb-6">
+                    Lapor Cepat & Mudah untuk <span class="text-brand-500">Kota Bandung</span>
                 </h1>
-                <p class="text-gray-400 text-lg leading-relaxed mb-8 max-w-lg">
-                    Laporkan jalan berlubang, infrastruktur rusak, atau kejahatan di sekitar Anda. Tanpa akun, cukup foto dan lokasi — laporan Anda langsung masuk ke sistem.
+                <p class="text-lg text-stone-500 dark:text-slate-400 mb-8 max-w-xl mx-auto lg:mx-0">
+                    Temukan infrastruktur rusak atau keadaan darurat? Laporkan segera. Tanpa perlu mendaftar akun,
+                    langsung terhubung dengan dinas terkait.
                 </p>
-                <div class="flex flex-wrap gap-3" id="lapor">
-                    <a href="{{ route('lapor') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3.5 rounded-xl transition btn-primary shadow-xl shadow-indigo-500/20">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        Buat Laporan
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                    <a href="{{ route('lapor') }}"
+                        class="w-full sm:w-auto bg-brand-500 hover:bg-brand-600 text-white px-8 py-3.5 rounded-full font-bold text-lg transition shadow-lg shadow-brand-500/30">
+                        Mulai Melapor
                     </a>
-                    <a href="{{ route('lacak') }}" class="inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold px-6 py-3.5 rounded-xl transition">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-                        Lacak Laporan
-                    </a>
-                    <button
-                        id="tombolPanik"
-                        type="button"
-                        class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 active:scale-95 text-white font-black px-6 py-3.5 rounded-xl transition shadow-xl shadow-red-500/30 animate-pulse hover:animate-none border-2 border-red-400/30">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                        🚨 Panic Button
+                    <button type="button"
+                        class="w-full sm:w-auto flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/30 text-red-600 border-2 border-red-100 dark:border-red-900/50 px-8 py-3 rounded-full font-bold text-lg transition shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Darurat (110)
                     </button>
                 </div>
+            </div>
+            <div class="order-1 lg:order-2 flex justify-center lg:justify-end relative">
+                <div
+                    class="absolute inset-0 bg-brand-200 dark:bg-brand-900/40 rounded-full blur-3xl opacity-40 transform scale-125">
+                </div>
 
-                <div class="flex items-center gap-6 mt-10 pt-10 border-t border-white/5">
-                    <div>
-                        <div class="text-2xl font-bold text-white">24 Kecamatan</div>
-                        <div class="text-xs text-gray-500 mt-0.5">Tercakup di Kota Bandung</div>
+                <img src="{{ asset('images/hero-hp.png') }}" alt="Aplikasi SIGAP BDG"
+                    class="w-full max-w-md lg:max-w-lg object-contain animate-float drop-shadow-2xl relative z-10 dark:hidden">
+
+                <img src="{{ asset('images/hero-hp1.png') }}" alt="Aplikasi SIGAP BDG Gelap"
+                    class="w-full max-w-md lg:max-w-lg object-contain animate-float drop-shadow-2xl relative z-10 hidden dark:block">
+            </div>
+        </div>
+    </section>
+
+    <section id="fitur" class="py-20 relative">
+        <div class="absolute inset-0 bg-stone-100/50 dark:bg-slate-900/50"></div>
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-sm font-bold tracking-widest text-brand-500 uppercase mb-2">Layanan Kami</h2>
+            <h3 class="text-3xl md:text-4xl font-extrabold text-stone-900 dark:text-white mb-16">Portal Layanan Tersedia
+            </h3>
+
+            <div class="grid md:grid-cols-3 gap-8 pt-8">
+                <div
+                    class="relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/40 dark:border-slate-700/50 text-center transition-transform hover:-translate-y-2 duration-300 pt-16 mt-12 md:mt-0">
+                    <div class="absolute -top-16 left-1/2 -translate-x-1/2">
+                        <img src="{{ asset('images/icon-infrastruktur.png') }}" alt="Infrastruktur"
+                            class="w-28 h-28 object-contain animate-float drop-shadow-lg">
                     </div>
-                    <div class="h-8 w-px bg-white/10"></div>
-                    <div>
-                        <div class="text-2xl font-bold text-white">Real-time</div>
-                        <div class="text-xs text-gray-500 mt-0.5">Update status laporan</div>
+                    <h4 class="text-xl font-bold text-stone-900 dark:text-white mb-3 mt-4">Lapor Infrastruktur</h4>
+                    <p class="text-stone-500 dark:text-slate-400 text-sm leading-relaxed">
+                        Jalan berlubang, lampu jalan mati, atau fasilitas publik rusak. Sistem AI akan mengestimasi
+                        kerusakan.
+                    </p>
+                </div>
+
+                <div
+                    class="relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/40 dark:border-slate-700/50 text-center transition-transform hover:-translate-y-2 duration-300 pt-16 mt-12 md:mt-0">
+                    <div class="absolute -top-16 left-1/2 -translate-x-1/2">
+                        <img src="{{ asset('images/icon-kejahatan.png') }}" alt="Kejahatan"
+                            class="w-28 h-28 object-contain animate-float drop-shadow-lg"
+                            style="animation-delay: 0.5s;">
                     </div>
-                    <div class="h-8 w-px bg-white/10"></div>
-                    <div>
-                        <div class="text-2xl font-bold text-white">AI-Powered</div>
-                        <div class="text-xs text-gray-500 mt-0.5">Analisis otomatis kerusakan</div>
+                    <h4 class="text-xl font-bold text-stone-900 dark:text-white mb-3 mt-4">Lapor Kejahatan</h4>
+                    <p class="text-stone-500 dark:text-slate-400 text-sm leading-relaxed">
+                        Laporan kerawanan atau tindak kriminal. Menambah titik panas pada peta keamanan kota.
+                    </p>
+                </div>
+
+                <div
+                    class="relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/40 dark:border-slate-700/50 text-center transition-transform hover:-translate-y-2 duration-300 pt-16 mt-12 md:mt-0">
+                    <div class="absolute -top-16 left-1/2 -translate-x-1/2">
+                        <img src="{{ asset('images/icon-lacak.png') }}" alt="Lacak Laporan"
+                            class="w-28 h-28 object-contain animate-float drop-shadow-lg" style="animation-delay: 1s;">
                     </div>
+                    <h4 class="text-xl font-bold text-stone-900 dark:text-white mb-3 mt-4">Lacak Laporan</h4>
+                    <p class="text-stone-500 dark:text-slate-400 text-sm leading-relaxed">
+                        Lacak setiap laporan yang Anda kirimkan menggunakan Tracking ID khusus. Ketahui progresnya.
+                    </p>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <div class="relative hidden lg:flex justify-center items-center">
-                <div class="floating relative w-80 h-80">
-                    <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/30 to-blue-600/20 rounded-3xl blur-xl"></div>
-                    <div class="relative bg-gray-900 border border-white/10 rounded-3xl p-6 shadow-2xl">
-                        <div class="flex items-center gap-2 mb-5">
-                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                            <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-                            <div class="w-3 h-3 rounded-full bg-green-400"></div>
-                            <span class="ml-2 text-xs text-gray-500">Laporan #TRK-8821</span>
+    <section id="cara-kerja" class="py-24 bg-brand-50 dark:bg-slate-900">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <div class="flex-1 w-full relative">
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-lg border border-stone-100 dark:border-slate-700 relative z-10">
+                        <div
+                            class="aspect-[4/3] bg-stone-50 dark:bg-slate-900 rounded-2xl flex items-center justify-center border-2 border-dashed border-stone-200 dark:border-slate-700">
+                            <div class="text-center">
+                                <svg class="w-12 h-12 text-stone-300 dark:text-slate-600 mx-auto mb-3" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-stone-400 dark:text-slate-500 font-medium">Unggah Bukti Foto</span>
+                            </div>
                         </div>
-                        <div class="space-y-3">
-                            <div class="bg-gray-800 rounded-xl p-3 flex items-center gap-3">
-                                <div class="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                                </div>
-                                <div>
-                                    <div class="text-xs font-semibold text-gray-200">Jalan Berlubang</div>
-                                    <div class="text-xs text-gray-500">Jl. Sukajadi, Cicendo</div>
-                                </div>
+                    </div>
+                    <div
+                        class="absolute -bottom-8 -right-8 w-24 h-24 bg-[radial-gradient(#f97316_2px,transparent_2px)] [background-size:12px_12px] opacity-30">
+                    </div>
+                </div>
+
+                <div class="flex-1">
+                    <h2 class="text-sm font-bold tracking-widest text-brand-500 uppercase mb-2">Mudah & Simpel</h2>
+                    <h3 class="text-3xl md:text-4xl font-extrabold text-stone-900 dark:text-white mb-8">Cara Kerja
+                        Laporan</h3>
+
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center flex-shrink-0 mt-1 shadow-md shadow-brand-500/30">
+                                1</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-stone-900 dark:text-white mb-1">Ambil Foto</h4>
+                                <p class="text-stone-500 dark:text-slate-400 text-sm leading-relaxed">Pastikan kerusakan
+                                    terlihat jelas. Lokasi (GPS) akan dideteksi secara otomatis dari perangkat Anda.</p>
                             </div>
-                            <div class="bg-gray-800/50 rounded-xl p-3">
-                                <div class="text-xs text-gray-500 mb-2">Status Laporan</div>
-                                <div class="flex items-center gap-2">
-                                    <div class="h-1.5 flex-1 bg-gray-700 rounded-full overflow-hidden">
-                                        <div class="h-full w-2/3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"></div>
-                                    </div>
-                                    <span class="text-xs text-indigo-400 font-semibold">Proses</span>
-                                </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center flex-shrink-0 mt-1 shadow-md shadow-brand-500/30">
+                                2</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-stone-900 dark:text-white mb-1">Kirim & Terima Resi
+                                </h4>
+                                <p class="text-stone-500 dark:text-slate-400 text-sm leading-relaxed">Sistem AI akan
+                                    mengevaluasi. Anda akan langsung menerima Tracking ID unik.</p>
                             </div>
-                            <div class="bg-gray-800/50 rounded-xl p-3">
-                                <div class="text-xs text-gray-500 mb-1">Analisis AI</div>
-                                <div class="text-xs text-gray-300">Kerusakan <span class="text-yellow-400 font-semibold">Sedang</span> · Est. Rp 12.500.000</div>
-                            </div>
-                            <div class="flex gap-2">
-                                <div class="flex-1 bg-indigo-600/30 border border-indigo-500/30 rounded-lg p-2 text-center">
-                                    <div class="text-xs font-semibold text-indigo-300">Pengajuan Dana</div>
-                                    <div class="text-xs text-indigo-400">Menunggu Approval</div>
-                                </div>
-                                <div class="flex-1 bg-green-600/20 border border-green-500/20 rounded-lg p-2 text-center">
-                                    <div class="text-xs font-semibold text-green-300">Tracking</div>
-                                    <div class="text-xs text-green-400">Aktif</div>
-                                </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div
+                                class="w-10 h-10 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center flex-shrink-0 mt-1 shadow-md shadow-brand-500/30">
+                                3</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-stone-900 dark:text-white mb-1">Pantau Tindak Lanjut
+                                </h4>
+                                <p class="text-stone-500 dark:text-slate-400 text-sm leading-relaxed">Gunakan fitur
+                                    Lacak untuk melihat status pengerjaan oleh instansi terkait secara transparan.</p>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <section id="fitur" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <div class="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
-                    Fitur Utama
-                </div>
-                <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Semua yang Kamu Butuhkan</h2>
-                <p class="text-gray-400 max-w-xl mx-auto">Satu platform untuk melaporkan, memantau, dan mengelola seluruh masalah infrastruktur dan keamanan di Kota Bandung.</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="card-hover bg-gray-900 border border-white/5 rounded-2xl p-7 group">
-                    <div class="w-12 h-12 bg-orange-500/15 rounded-xl flex items-center justify-center mb-5 group-hover:bg-orange-500/25 transition">
-                        <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2">Lapor Infrastruktur</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Foto jalan berlubang atau kerusakan infrastruktur, sistem otomatis mendeteksi lokasi dan menganalisis tingkat kerusakan menggunakan AI.</p>
-                    <div class="mt-5 pt-5 border-t border-white/5 flex items-center gap-2 text-xs text-orange-400 font-medium">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                        Tanpa login · Gratis
-                    </div>
-                </div>
-
-                <div class="card-hover bg-gray-900 border border-white/5 rounded-2xl p-7 group">
-                    <div class="w-12 h-12 bg-red-500/15 rounded-xl flex items-center justify-center mb-5 group-hover:bg-red-500/25 transition">
-                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2">Lapor Kejahatan</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Tandai titik kejahatan di peta secara anonim. Data dikumpulkan untuk membantu kepolisian mengidentifikasi daerah rawan.</p>
-                    <div class="mt-5 pt-5 border-t border-white/5 flex items-center gap-2 text-xs text-red-400 font-medium">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                        Anonim · Langsung ke sistem
-                    </div>
-                </div>
-
-                <div class="card-hover bg-gray-900 border border-white/5 rounded-2xl p-7 group">
-                    <div class="w-12 h-12 bg-green-500/15 rounded-xl flex items-center justify-center mb-5 group-hover:bg-green-500/25 transition">
-                        <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                        </svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2">Tracking Status</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Pantau perkembangan laporan Anda secara real-time menggunakan Tracking ID unik yang diberikan saat laporan dibuat.</p>
-                    <div class="mt-5 pt-5 border-t border-white/5 flex items-center gap-2 text-xs text-green-400 font-medium">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                        Cukup masukkan Tracking ID
+                    <div class="mt-10 flex gap-4">
+                        <a href="{{ route('lapor') }}"
+                            class="bg-brand-500 hover:bg-brand-600 text-white px-8 py-3 rounded-full font-bold transition shadow-md shadow-brand-500/20">Mulai
+                            Lapor</a>
+                        <a href="{{ route('lacak') }}"
+                            class="bg-white dark:bg-slate-800 hover:bg-stone-50 dark:hover:bg-slate-700 text-stone-700 dark:text-slate-300 border border-stone-200 dark:border-slate-700 px-8 py-3 rounded-full font-bold transition">Lacak</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="cara-kerja" class="py-24 bg-gray-900/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <div class="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
-                    Cara Kerja
+    <footer class="bg-brand-600 dark:bg-slate-900 pt-16 pb-8 text-white transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <div class="lg:col-span-2">
+                    <div class="flex items-center gap-2 mb-6">
+                        <div class="w-8 h-8 bg-white dark:bg-brand-500 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-brand-600 dark:text-white" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <span class="font-bold text-xl tracking-tight text-white">SIGAP BDG</span>
+                    </div>
+                    <p class="text-brand-100 dark:text-slate-400 text-sm leading-relaxed max-w-sm">
+                        Sistem Informasi Pelaporan Publik Kota Bandung. Mewujudkan kota yang aman, nyaman, dan responsif
+                        terhadap kebutuhan warga.
+                    </p>
                 </div>
-                <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">3 Langkah Mudah Melapor</h2>
-                <p class="text-gray-400 max-w-lg mx-auto">Proses pelaporan dirancang sesederhana mungkin agar semua warga bisa melakukannya.</p>
+
+                <div>
+                    <h5 class="font-bold text-lg mb-4 text-white">Tautan Pintas</h5>
+                    <ul class="space-y-3 text-sm text-brand-100 dark:text-slate-400">
+                        <li><a href="#" class="hover:text-white transition">Beranda</a></li>
+                        <li><a href="{{ route('lapor') }}" class="hover:text-white transition">Buat Laporan</a></li>
+                        <li><a href="{{ route('lacak') }}" class="hover:text-white transition">Lacak Laporan</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="font-bold text-lg mb-4 text-white">Kontak</h5>
+                    <ul class="space-y-3 text-sm text-brand-100 dark:text-slate-400">
+                        <li>Darurat: 110</li>
+                        <li>Email: info@sigapbdg.go.id</li>
+                        <li><a href="#" class="hover:text-white transition underline">Portal Administrator</a></li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-indigo-500/20">
-                        <span class="text-2xl font-black text-white">1</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2">Foto Masalah</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Ambil foto jalan rusak atau tandai lokasi kejahatan. Sistem akan mendeteksi koordinat GPS secara otomatis.</p>
+            <div
+                class="pt-8 border-t border-brand-500/50 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-brand-200 dark:text-slate-500">© 2026 SIGAP BDG. Hak Cipta Dilindungi.</p>
+                <div class="text-sm text-brand-200 dark:text-slate-500">
+                    Dikelola oleh Pemerintah Kota Bandung
                 </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-indigo-500/20">
-                        <span class="text-2xl font-black text-white">2</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2">Kirim Laporan</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Isi form singkat dan kirim. Anda akan mendapat <span class="text-indigo-400 font-semibold">Tracking ID</span> unik sebagai bukti laporan.</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-xl shadow-indigo-500/20">
-                        <span class="text-2xl font-black text-white">3</span>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2">Pantau Progress</h3>
-                    <p class="text-gray-500 text-sm leading-relaxed">Gunakan Tracking ID untuk memantau status laporan Anda dari <span class="text-green-400 font-semibold">Menunggu → Proses → Selesai</span>.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-24">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-gradient-to-br from-indigo-900/80 to-blue-900/60 border border-indigo-500/20 rounded-3xl p-12 text-center relative overflow-hidden">
-                <div class="absolute -top-20 -right-20 w-64 h-64 bg-indigo-600/20 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-600/15 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="relative">
-                    <span class="inline-flex items-center gap-2 bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
-                        Portal Admin
-                    </span>
-                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Anda Admin Kecamatan?</h2>
-                    <p class="text-gray-300 mb-8 max-w-lg mx-auto">Akses dashboard untuk mengelola laporan, memperbarui status, dan mengajukan anggaran perbaikan infrastruktur di wilayah Anda.</p>
-                    <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="{{ route('masuk') }}" class="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-3.5 rounded-xl transition btn-primary shadow-xl shadow-indigo-500/25">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" /></svg>
-                            Masuk Sekarang
-                        </a>
-                        <a href="{{ route('daftar') }}" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/15 text-white font-semibold px-8 py-3.5 rounded-xl transition">
-                            Daftar Akun Admin
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="border-t border-white/5 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-md flex items-center justify-center">
-                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                </div>
-                <span class="font-bold text-white text-sm">SIGAP BDG</span>
-            </div>
-            <p class="text-xs text-gray-600 text-center">
-                © 2026 SIGAP BDG · Sistem Informasi Pelaporan Publik Kota Bandung. Hak cipta dilindungi.
-            </p>
-            <div class="flex items-center gap-4 text-xs text-gray-500">
-                <a href="{{ route('lapor') }}" class="hover:text-gray-300 transition">Lapor</a>
-                <a href="{{ route('lacak') }}" class="hover:text-gray-300 transition">Lacak</a>
-                <a href="{{ route('masuk') }}" class="hover:text-gray-300 transition">Portal Admin</a>
             </div>
         </div>
     </footer>
 
-<script>
-(function() {
-    var tombolPanik = document.getElementById('tombolPanik');
-    var tokenCsrf   = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    var urlLaporan  = '{{ route("lapor.kejahatan") }}';
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var statusBerhasil = '{{ session("success") }}';
+            var statusPeringatan = '{{ session("warning") }}';
+            var statusError = '{{ $errors->first() }}';
 
-    tombolPanik.addEventListener('click', function() {
-        tombolPanik.disabled = true;
-        tombolPanik.textContent = 'Mendeteksi lokasi...';
+            var modeGelapSaatIni = document.documentElement.classList.contains('dark');
+            var warnaLatarBelakang = modeGelapSaatIni ? '#1e293b' : '#ffffff';
+            var warnaTeks = modeGelapSaatIni ? '#f8fafc' : '#1c1917';
 
-        if (!navigator.geolocation) {
-            window.location.href = 'tel:110';
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            function(posisi) {
-                var latitudeDapatkan  = posisi.coords.latitude;
-                var longitudeDapatkan = posisi.coords.longitude;
-
-                fetch(urlLaporan, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': tokenCsrf,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        latitude:  latitudeDapatkan,
-                        longitude: longitudeDapatkan
-                    })
-                })
-                .then(function() {
-                    window.location.href = 'tel:110';
-                })
-                .catch(function() {
-                    window.location.href = 'tel:110';
+            if (statusBerhasil) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: statusBerhasil,
+                    confirmButtonColor: '#f97316',
+                    background: warnaLatarBelakang,
+                    color: warnaTeks,
+                    customClass: { popup: 'rounded-3xl', confirmButton: 'rounded-full px-6 py-2.5 font-bold' },
+                    timer: 4000,
+                    timerProgressBar: true
                 });
-            },
-            function() {
-                window.location.href = 'tel:110';
-            },
-            { timeout: 8000 }
-        );
-    });
-})();
-</script>
-
+            } else if (statusPeringatan) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: statusPeringatan,
+                    confirmButtonColor: '#ea580c',
+                    background: warnaLatarBelakang,
+                    color: warnaTeks,
+                    customClass: { popup: 'rounded-3xl', confirmButton: 'rounded-full px-6 py-2.5 font-bold' }
+                });
+            } else if (statusError) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan!',
+                    text: statusError,
+                    confirmButtonColor: '#dc2626',
+                    background: warnaLatarBelakang,
+                    color: warnaTeks,
+                    customClass: { popup: 'rounded-3xl', confirmButton: 'rounded-full px-6 py-2.5 font-bold' }
+                });
+            }
+        });
+    </script>
 </body>
+
 </html>
