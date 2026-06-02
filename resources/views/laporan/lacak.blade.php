@@ -89,7 +89,7 @@
     </style>
 </head>
 
-<body class="bg-stone-50 dark:bg-slate-950 text-stone-800 dark:text-slate-100 transition-colors duration-300 min-h-screen">
+<body class="bg-stone-50 dark:bg-slate-950 text-stone-800 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col">
 
     <nav class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 shadow-sm border-b border-stone-100 dark:border-slate-800">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -134,7 +134,7 @@
         </div>
     </nav>
 
-    <main class="max-w-2xl mx-auto px-4 sm:px-6 pt-12 pb-20">
+    <main class="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 pt-12 pb-20">
 
         <div class="mb-10">
             <div

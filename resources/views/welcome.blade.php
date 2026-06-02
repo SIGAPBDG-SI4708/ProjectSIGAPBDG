@@ -324,6 +324,39 @@
         </div>
     </section>
 
+    <section class="py-24 bg-stone-50 dark:bg-slate-950 overflow-hidden relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-sm font-bold tracking-widest text-brand-500 uppercase mb-2">Suara Warga</h2>
+                <h3 class="text-3xl md:text-4xl font-extrabold text-stone-900 dark:text-white">Ulasan Layanan SIGAP BDG</h3>
+                <p class="mt-4 text-stone-500 dark:text-slate-400 max-w-2xl mx-auto text-sm">Apa kata warga yang telah menggunakan layanan pelaporan kami.</p>
+            </div>
+
+            @if(isset($ulasanBintang5) && $ulasanBintang5->count() > 0)
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-y-4 sm:gap-y-0 sm:-space-x-8 group">
+                    @foreach($ulasanBintang5 as $i => $ulasan)
+                        <div class="relative transition-all duration-300 ease-in-out hover:z-50 hover:-translate-y-4 hover:scale-105 group-hover:sm:mx-4 w-full sm:w-72 bg-white dark:bg-slate-800 p-6 rounded-3xl border border-stone-200 dark:border-slate-700 shadow-xl" style="z-index: {{ 10 - $i }}">
+                            <div class="flex items-center gap-1 text-amber-400 mb-4">
+                                @for($j = 0; $j < 5; $j++)
+                                    <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                                @endfor
+                            </div>
+                            <p class="text-stone-600 dark:text-slate-300 text-sm font-medium mb-6 line-clamp-4">"{{ $ulasan->ulasan }}"</p>
+                            <div class="border-t border-stone-100 dark:border-slate-700 pt-4 mt-auto">
+                                <div class="font-bold text-stone-900 dark:text-white text-sm">Warga Kota Bandung</div>
+                                <div class="text-xs text-stone-500 dark:text-slate-400 mt-0.5">Laporan {{ $ulasan->laporanInfrastruktur->daerah->nama_daerah ?? 'Infrastruktur' }}</div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-12">
+                    <p class="text-stone-500 dark:text-slate-400">Belum ada ulasan untuk ditampilkan saat ini.</p>
+                </div>
+            @endif
+        </div>
+    </section>
+
     <footer class="bg-brand-600 dark:bg-slate-900 pt-16 pb-8 text-white transition-colors duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
