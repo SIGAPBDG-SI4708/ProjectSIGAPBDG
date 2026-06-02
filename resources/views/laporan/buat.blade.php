@@ -90,10 +90,10 @@
             background: rgba(30, 41, 59, 0.7);
         }
 
-        /* ── Print-Out Receipt Animation ── */
         #struk-overlay {
             display: none;
         }
+
         #struk-overlay.aktif {
             display: flex;
         }
@@ -104,37 +104,47 @@
             opacity: 0;
             transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
         }
+
         .struk-kertas.masuk {
             transform: translateY(0);
             opacity: 1;
         }
 
-        /* Garis perforasi atas/bawah struk */
         .perforasi {
-            background-image: repeating-linear-gradient(
-                90deg,
-                transparent,
-                transparent 6px,
-                currentColor 6px,
-                currentColor 12px
-            );
+            background-image: repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 6px,
+                    currentColor 6px,
+                    currentColor 12px);
             height: 2px;
         }
 
-        /* Animasi garis printer */
         @keyframes scanLine {
-            0%   { top: 0; opacity: 1; }
-            100% { top: 100%; opacity: 0; }
+            0% {
+                top: 0;
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
         }
+
         .scan-line {
             animation: scanLine 0.8s ease-out forwards;
         }
 
-        /* Efek ketik teks kode */
         @keyframes ketik {
-            from { width: 0; }
-            to   { width: 100%; }
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
         }
+
         .efek-ketik {
             overflow: hidden;
             white-space: nowrap;
@@ -142,7 +152,7 @@
             width: 0;
         }
 
-        /* Salin berhasil */
+
         .salin-ok {
             transition: all 0.2s;
         }
@@ -151,50 +161,39 @@
 
 <body
     class="bg-stone-50 dark:bg-slate-950 text-stone-800 dark:text-slate-100 transition-colors duration-300 min-h-screen">
-
-    <!-- ══════════════════════════════════════════
-         PRINT-OUT RECEIPT OVERLAY
-         Muncul setelah laporan berhasil terkirim
-         ════════════════════════════════════════ -->
     <div id="struk-overlay"
         class="fixed inset-0 z-50 flex items-start justify-center bg-stone-950/70 dark:bg-slate-950/80 backdrop-blur-sm pt-12 pb-6 overflow-y-auto">
 
-        <!-- Printer visual atas -->
         <div class="w-full max-w-sm">
-            <!-- Badan printer -->
-            <div class="mx-auto w-56 h-10 bg-stone-700 dark:bg-slate-700 rounded-xl flex items-center justify-center shadow-xl relative">
+            <div
+                class="mx-auto w-56 h-10 bg-stone-700 dark:bg-slate-700 rounded-xl flex items-center justify-center shadow-xl relative">
                 <div class="flex gap-2">
                     <div class="w-2 h-2 rounded-full bg-brand-400 animate-pulse"></div>
                     <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
                 </div>
-                <!-- slot keluar kertas -->
-                <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-32 h-3 bg-stone-600 dark:bg-slate-600 rounded-b-lg"></div>
+                <div
+                    class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-32 h-3 bg-stone-600 dark:bg-slate-600 rounded-b-lg">
+                </div>
             </div>
 
-            <!-- Struk Kertas -->
             <div class="struk-kertas mx-auto w-full max-w-sm" id="struk-kertas">
-                <!-- Kertas struk utama -->
-                <div class="bg-white dark:bg-slate-50 shadow-2xl relative overflow-hidden" style="border-radius: 0 0 4px 4px;">
+                <div class="bg-white dark:bg-slate-50 shadow-2xl relative overflow-hidden"
+                    style="border-radius: 0 0 4px 4px;">
 
-                    <!-- Garis scan printer (animasi) -->
                     <div id="garisScanner"
                         class="absolute left-0 right-0 h-1 bg-gradient-to-b from-brand-400/60 to-transparent z-10 pointer-events-none"
                         style="top:0;"></div>
 
-                    <!-- Perforasi atas -->
                     <div class="perforasi text-stone-300 mx-4 mt-4 mb-3"></div>
 
-                    <!-- Header struk -->
                     <div class="px-6 py-2 text-center">
                         <div class="text-xs font-bold text-stone-400 tracking-widest uppercase mb-1">SIGAP BDG</div>
                         <div class="text-[10px] text-stone-400">Sistem Informasi Gerak Akselerasi Pelayanan</div>
                         <div class="text-[10px] text-stone-400">Kota Bandung</div>
                     </div>
 
-                    <!-- Garis tengah -->
                     <div class="border-t border-dashed border-stone-200 mx-4"></div>
 
-                    <!-- Body struk -->
                     <div class="px-6 py-4 space-y-3">
                         <div class="flex justify-between text-[11px] text-stone-500">
                             <span>Jenis</span>
@@ -214,36 +213,30 @@
                         </div>
                     </div>
 
-                    <!-- Garis tengah -->
                     <div class="border-t border-dashed border-stone-200 mx-4"></div>
 
-                    <!-- Tracking ID besar -->
                     <div class="px-6 py-5 text-center">
                         <div class="text-[10px] text-stone-400 uppercase tracking-widest mb-2">Tracking ID Anda</div>
-                        <!-- Kode bisa diseleksi & dicopy -->
                         <div id="struk-kode"
                             class="efek-ketik inline-block text-2xl font-black tracking-widest text-stone-900 font-mono select-all cursor-text"
                             style="letter-spacing: 0.15em;"></div>
-                        <!-- Barcode visual dekoratif -->
                         <div class="mt-3 flex justify-center gap-0.5 items-end h-8">
-                            @foreach(range(1,28) as $b)
-                            <div class="bg-stone-800" style="width: {{ rand(1,3) }}px; height: {{ rand(12,32) }}px;"></div>
+                            @foreach(range(1, 28) as $b)
+                                <div class="bg-stone-800" style="width: {{ rand(1, 3) }}px; height: {{ rand(12, 32) }}px;">
+                                </div>
                             @endforeach
                         </div>
                         <div class="text-[9px] text-stone-400 mt-1 font-mono" id="struk-kode-kecil"></div>
                     </div>
 
-                    <!-- Perforasi bawah -->
                     <div class="border-t border-dashed border-stone-200 mx-4"></div>
                     <div class="px-6 py-3 text-center">
                         <div class="text-[10px] text-stone-400">Simpan kode ini untuk melacak laporan Anda</div>
                         <div class="text-[10px] text-stone-400">sigapbdg.go.id/lacak</div>
                     </div>
 
-                    <!-- Perforasi robek bawah -->
                     <div class="perforasi text-stone-300 mx-4 mb-4"></div>
 
-                    <!-- Tombol aksi -->
                     <div class="px-6 pb-6 flex flex-col gap-2">
                         <button id="tombolSalinStruk" onclick="salinKodeStruk()"
                             class="salin-ok w-full bg-stone-100 hover:bg-stone-200 text-stone-700 text-sm font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2">
@@ -268,18 +261,17 @@
                     </div>
                 </div>
 
-                <!-- Ujung kertas robek -->
-                <div class="h-3 bg-white dark:bg-slate-50" style="clip-path: polygon(0 0, 5% 100%, 10% 0, 15% 100%, 20% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 100% 0);"></div>
+                <div class="h-3 bg-white dark:bg-slate-50"
+                    style="clip-path: polygon(0 0, 5% 100%, 10% 0, 15% 100%, 20% 0, 25% 100%, 30% 0, 35% 100%, 40% 0, 45% 100%, 50% 0, 55% 100%, 60% 0, 65% 100%, 70% 0, 75% 100%, 80% 0, 85% 100%, 90% 0, 95% 100%, 100% 0);">
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Navbar -->
     <nav
         class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 shadow-sm border-b border-stone-100 dark:border-slate-800">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <!-- Brand -->
                 <a href="{{ route('beranda') }}" class="flex items-center gap-2">
                     <div
                         class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center shadow-md shadow-brand-500/30">
@@ -292,23 +284,7 @@
                             class="text-brand-500">BDG</span></span>
                 </a>
 
-                <!-- Nav Links -->
-                <!-- <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ route('beranda') }}"
-                        class="text-stone-600 dark:text-slate-300 hover:text-brand-500 dark:hover:text-brand-400 font-medium transition">Beranda</a>
-                    <a href="{{ route('lacak') }}"
-                        class="text-stone-600 dark:text-slate-300 hover:text-brand-500 dark:hover:text-brand-400 font-medium transition flex items-center gap-1.5">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        Lacak Laporan
-                    </a>
-                </div> -->
-
-                <!-- Right Actions -->
                 <div class="flex items-center gap-3">
-                    <!-- Dark mode toggle -->
                     <button @click="temaGelap = !temaGelap"
                         class="flex items-center justify-center w-10 h-10 rounded-full bg-stone-100 dark:bg-slate-800 text-stone-500 dark:text-slate-400 hover:text-brand-500 transition">
                         <span x-show="!temaGelap">
@@ -324,7 +300,6 @@
                             </svg>
                         </span>
                     </button>
-                    <!-- Buat Laporan CTA -->
                     <a href="{{ route('lacak') }}"
                         class="bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition shadow-md shadow-brand-500/20 flex items-center gap-1.5">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -340,7 +315,6 @@
 
     <main class="max-w-2xl mx-auto px-4 sm:px-6 pt-12 pb-20">
 
-        <!-- Success tracking alert -->
         @if(session('trackingBerhasil'))
             <div
                 class="mb-8 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-700/40 rounded-3xl p-6 relative overflow-hidden shadow-sm">
@@ -387,7 +361,6 @@
             </div>
         @endif
 
-        <!-- Errors -->
         @if($errors->any())
             <div
                 class="mb-6 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-700/40 rounded-2xl p-4 shadow-sm">
@@ -405,7 +378,6 @@
             </div>
         @endif
 
-        <!-- Page Header -->
         <div class="mb-10">
             <div
                 class="inline-flex items-center gap-2 bg-brand-100 dark:bg-brand-500/10 border border-brand-200 dark:border-brand-500/20 text-brand-600 dark:text-brand-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
@@ -424,14 +396,12 @@
             </p>
         </div>
 
-        <!-- Form -->
         <form id="formLaporan" action="{{ route('proses.laporan') }}" method="POST" enctype="multipart/form-data"
             class="space-y-5">
             @csrf
             <input type="hidden" id="inputLatitude" name="latitude" value="{{ old('latitude') }}">
             <input type="hidden" id="inputLongitude" name="longitude" value="{{ old('longitude') }}">
 
-            <!-- GPS Card -->
             <div
                 class="glass-card bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/50 rounded-3xl p-5 sm:p-6 shadow-xl">
                 <div class="flex items-center justify-between mb-4">
@@ -456,7 +426,6 @@
                 </div>
             </div>
 
-            <!-- Photo Upload Card -->
             <div
                 class="glass-card bg-white/70 dark:bg-slate-800/70 backdrop-blur-md border border-white/40 dark:border-slate-700/50 rounded-3xl p-5 sm:p-6 shadow-xl">
                 <div class="text-sm font-semibold text-stone-800 dark:text-white mb-1">Foto Kerusakan</div>
@@ -483,7 +452,6 @@
                 </label>
             </div>
 
-            <!-- Submit Button -->
             <button type="button" id="tombolKirim" @click.prevent="munculkanLoadingSwal()"
                 class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-4 px-6 rounded-full shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2 transition-all duration-300 hover:-translate-y-1 text-base">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -498,7 +466,6 @@
         </form>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-brand-600 dark:bg-slate-900 pt-10 pb-6 text-white transition-colors duration-300 mt-12">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -579,7 +546,6 @@
                 window.salinKode = salinKode;
             })();
 
-        // ── Submit → Animasi Proses + Print Struk ──
         function munculkanLoadingSwal() {
             var foto = document.getElementById('inputFoto');
             if (!foto || !foto.files || !foto.files[0]) {
@@ -587,7 +553,6 @@
                 return;
             }
 
-            // Tampilkan overlay loading ringan sementara form submit
             var tombol = document.getElementById('tombolKirim');
             tombol.disabled = true;
             tombol.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Memproses...';
@@ -595,65 +560,57 @@
             document.getElementById('formLaporan').submit();
         }
 
-        // ── Animasi Print-Out Struk setelah laporan berhasil ──
         @if(session('trackingBerhasil'))
-        (function () {
-            var kode = '{{ session("trackingBerhasil") }}';
-            var lacakUrl = '{{ route("lacak") }}?tracking_id=' + kode;
-            var overlay   = document.getElementById('struk-overlay');
-            var kertas    = document.getElementById('struk-kertas');
-            var elKode    = document.getElementById('struk-kode');
-            var elKodeKecil = document.getElementById('struk-kode-kecil');
-            var elTanggal = document.getElementById('struk-tanggal');
-            var elWaktu   = document.getElementById('struk-waktu');
-            var scanner   = document.getElementById('garisScanner');
+            (function () {
+                var kode = '{{ session("trackingBerhasil") }}';
+                var lacakUrl = '{{ route("lacak") }}?tracking_id=' + kode;
+                var overlay = document.getElementById('struk-overlay');
+                var kertas = document.getElementById('struk-kertas');
+                var elKode = document.getElementById('struk-kode');
+                var elKodeKecil = document.getElementById('struk-kode-kecil');
+                var elTanggal = document.getElementById('struk-tanggal');
+                var elWaktu = document.getElementById('struk-waktu');
+                var scanner = document.getElementById('garisScanner');
 
-            // Isi data dinamis
-            var now = new Date();
-            var tgl = now.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' });
-            var jam = now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' }) + ' WIB';
-            elTanggal.textContent = tgl;
-            elWaktu.textContent   = jam;
-            elKode.textContent    = kode;
-            elKodeKecil.textContent = kode;
+                var now = new Date();
+                var tgl = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                var jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+                elTanggal.textContent = tgl;
+                elWaktu.textContent = jam;
+                elKode.textContent = kode;
+                elKodeKecil.textContent = kode;
 
-            // Set link lacak
-            document.getElementById('tombolLacakStruk').href = lacakUrl;
+                document.getElementById('tombolLacakStruk').href = lacakUrl;
 
-            // Tampilkan overlay
-            overlay.classList.add('aktif');
-            document.body.style.overflow = 'hidden';
+                overlay.classList.add('aktif');
+                document.body.style.overflow = 'hidden';
 
-            // Animasi scan printer
-            setTimeout(function () {
-                kertas.classList.add('masuk');
+                setTimeout(function () {
+                    kertas.classList.add('masuk');
 
-                // Animasi scanner line
-                if (scanner) {
-                    scanner.classList.add('scan-line');
-                }
-            }, 100);
-        })();
+                    if (scanner) {
+                        scanner.classList.add('scan-line');
+                    }
+                }, 100);
+            })();
         @endif
 
-        // Salin kode tracking dari struk
-        function salinKodeStruk() {
-            var kode = document.getElementById('struk-kode').textContent.trim();
-            navigator.clipboard.writeText(kode).then(function () {
-                var tombol = document.getElementById('tombolSalinStruk');
-                tombol.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Tersalin!';
-                tombol.classList.add('bg-emerald-100', 'text-emerald-700');
-                setTimeout(function () {
-                    tombol.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg> Salin Kode';
-                    tombol.classList.remove('bg-emerald-100', 'text-emerald-700');
-                }, 2000);
-            });
-        }
+            function salinKodeStruk() {
+                var kode = document.getElementById('struk-kode').textContent.trim();
+                navigator.clipboard.writeText(kode).then(function () {
+                    var tombol = document.getElementById('tombolSalinStruk');
+                    tombol.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Tersalin!';
+                    tombol.classList.add('bg-emerald-100', 'text-emerald-700');
+                    setTimeout(function () {
+                        tombol.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg> Salin Kode';
+                        tombol.classList.remove('bg-emerald-100', 'text-emerald-700');
+                    }, 2000);
+                });
+            }
 
-        // Tutup struk dan kembali ke form
         function tutupStruk() {
             var overlay = document.getElementById('struk-overlay');
-            var kertas  = document.getElementById('struk-kertas');
+            var kertas = document.getElementById('struk-kertas');
             kertas.classList.remove('masuk');
             setTimeout(function () {
                 overlay.classList.remove('aktif');
