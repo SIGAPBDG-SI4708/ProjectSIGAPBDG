@@ -68,11 +68,16 @@ class LayananSimulasiAi
                 'tingkat_keparahan' => $tingkatKeparahan,
                 'estimasi_biaya'    => $estimasiBiaya,
             ]);
+
+            if ($adaSpam) {
+                $laporanTarget->update(['status' => 'Ditolak']);
+            }
         } catch (\Exception $e) {
             AnalisisAi::create([
                 'id_laporan' => $idLaporan,
                 'is_spam'    => true,
             ]);
+            $laporanTarget->update(['status' => 'Ditolak']);
         }
     }
 }
