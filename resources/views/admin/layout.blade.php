@@ -38,6 +38,7 @@
         .badge-status-selesai  { background: rgba(34,197,94,0.1); color: #16a34a; border: 1px solid rgba(34,197,94,0.25); }
         .dark .badge-status-selesai { color: #4ade80; }
     </style>
+    @stack('styles')
 </head>
 <body class="bg-stone-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex transition-colors duration-200">
 
@@ -143,5 +144,6 @@
         </main>
     </div>
 
+    @stack('scripts')
 </body>
 </html>
