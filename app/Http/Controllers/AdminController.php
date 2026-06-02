@@ -85,20 +85,39 @@ class AdminController extends Controller
         ));
     }
 
-    public function tampilkanDaftarLaporan()
+    public function tampilkanDaftarLaporan(\Illuminate\Http\Request $request)
     {
         $penggunaAktif = Auth::user();
 
-        if ($penggunaAktif->role === 'Super Admin') {
-            $daftarLaporan = LaporanInfrastruktur::with('daerah')->latest()->paginate(15);
-        } else {
-            $daftarLaporan = LaporanInfrastruktur::with('daerah')
-                ->where('id_daerah', $penggunaAktif->id_daerah)
-                ->latest()
-                ->paginate(15);
+        $query = LaporanInfrastruktur::with('daerah')->latest();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('tracking_id', 'like', "%{$search}%")
+                    ->orWhereHas('daerah', function ($qDaerah) use ($search) {
+                        $qDaerah->where('nama_daerah', 'like', "%{$search}%");
+                    });
+            });
         }
 
-        return view('admin.laporan.indeks', compact('daftarLaporan'));
+        if ($request->filled('status') && $request->input('status') !== 'Semua') {
+            $query->where('status', $request->input('status'));
+        }
+
+        if ($penggunaAktif->role === 'Super Admin') {
+            if ($request->filled('daerah') && $request->input('daerah') !== 'Semua') {
+                $query->where('id_daerah', $request->input('daerah'));
+            }
+            $daftarLaporan = $query->paginate(15)->withQueryString();
+            $daftarDaerah = \App\Models\Daerah::all();
+        } else {
+            $query->where('id_daerah', $penggunaAktif->id_daerah);
+            $daftarLaporan = $query->paginate(15)->withQueryString();
+            $daftarDaerah = collect();
+        }
+
+        return view('admin.laporan.indeks', compact('daftarLaporan', 'daftarDaerah'));
     }
 
     public function tampilkanDetailLaporan($id)
