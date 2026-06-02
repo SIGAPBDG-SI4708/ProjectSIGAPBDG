@@ -79,6 +79,8 @@ class LaporanController extends Controller
 
         \App\Services\LayananSimulasiAi::prosesAnalisis($laporanBaru->id, $fotoAwal);
 
+        event(new \App\Events\LaporanMasukEvent($laporanBaru));
+
         return back()->with('trackingBerhasil', $trackingId);
     }
 
