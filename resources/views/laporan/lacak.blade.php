@@ -206,6 +206,7 @@
                                 'Menunggu' => ['bg' => 'bg-amber-100 dark:bg-yellow-500/10', 'border' => 'border-amber-200 dark:border-yellow-500/20', 'text' => 'text-amber-700 dark:text-yellow-400', 'dot' => 'bg-amber-400', 'pulse' => true],
                                 'Proses'   => ['bg' => 'bg-brand-100 dark:bg-brand-500/10',   'border' => 'border-brand-200 dark:border-brand-500/20',   'text' => 'text-brand-700 dark:text-brand-400',   'dot' => 'bg-brand-500', 'pulse' => false],
                                 'Selesai'  => ['bg' => 'bg-emerald-100 dark:bg-green-500/10',  'border' => 'border-emerald-200 dark:border-green-500/20',  'text' => 'text-emerald-700 dark:text-green-400',  'dot' => 'bg-emerald-500', 'pulse' => false],
+                                'Ditolak'  => ['bg' => 'bg-red-100 dark:bg-red-500/10',     'border' => 'border-red-200 dark:border-red-500/20',     'text' => 'text-red-700 dark:text-red-400',     'dot' => 'bg-red-500',   'pulse' => false],
                                 default    => ['bg' => 'bg-stone-100 dark:bg-slate-700',      'border' => 'border-stone-200 dark:border-slate-600',      'text' => 'text-stone-500 dark:text-slate-400',   'dot' => 'bg-stone-400', 'pulse' => false],
                             };
                         @endphp
@@ -240,6 +241,7 @@
                     @endif
 
                     <div class="px-5 sm:px-6 py-5">
+                        @if($dataLaporan->status !== 'Ditolak')
                         <div class="flex gap-2 mb-6">
                             @php
                                 $tahapan = ['Menunggu', 'Proses', 'Selesai'];
@@ -256,6 +258,7 @@
                             </div>
                             @endforeach
                         </div>
+                        @endif
 
                         <div class="grid grid-cols-2 gap-4 mb-5">
                             <div class="bg-stone-50 dark:bg-slate-900/60 rounded-2xl p-4 border border-stone-100 dark:border-slate-700/50">
@@ -295,6 +298,124 @@
                                     class="w-full h-full object-cover">
                             </div>
                         </div>
+                        @endif
+
+                        @if($dataLaporan->status === 'Selesai')
+                            <div class="mt-6 pt-6 border-t border-stone-100 dark:border-slate-700/50">
+                                <div class="text-sm font-bold text-stone-800 dark:text-white mb-4 flex items-center gap-2">
+                                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                    </svg>
+                                    Ulasan Penanganan
+                                </div>
+                                
+                                @if(session('sukses_ulasan'))
+                                <div class="mb-4 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-700 text-emerald-700 dark:text-emerald-400 px-4 py-3 rounded-2xl text-sm flex items-center gap-2">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                    {{ session('sukses_ulasan') }}
+                                </div>
+                                @endif
+
+                                @if($dataLaporan->ulasanLaporan->count() > 0)
+                                    <div class="space-y-3 mb-4 max-h-64 overflow-y-auto pr-1">
+                                        @foreach($dataLaporan->ulasanLaporan as $ulasanData)
+                                        <div class="bg-stone-50 dark:bg-slate-900/50 p-4 rounded-2xl border border-stone-100 dark:border-slate-700/50">
+                                            <div class="flex items-center gap-1 mb-2">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    <svg class="w-5 h-5 {{ $i <= $ulasanData->rating ? 'text-amber-400 fill-amber-400' : 'text-stone-300 dark:text-slate-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                    </svg>
+                                                @endfor
+                                                <span class="text-xs text-slate-400 ml-auto">{{ $ulasanData->created_at->diffForHumans() }}</span>
+                                            </div>
+                                            @if($ulasanData->ulasan)
+                                                <p class="text-sm text-stone-600 dark:text-slate-300 italic">"{{ $ulasanData->ulasan }}"</p>
+                                            @else
+                                                <p class="text-sm text-stone-400 dark:text-slate-500 italic">(Tidak ada ulasan tertulis)</p>
+                                            @endif
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    <div x-data="{ tampilForm: false }">
+                                        <button type="button" @click="tampilForm = !tampilForm" x-show="!tampilForm" class="w-full bg-brand-50 hover:bg-brand-100 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400 dark:hover:bg-brand-900/30 font-semibold text-sm py-2.5 rounded-xl transition border border-brand-200 dark:border-brand-800/50">Tambah Ulasan Lagi</button>
+                                        <div x-show="tampilForm" x-transition>
+                                            <form action="{{ route('lacak.ulasan', $dataLaporan->id) }}" method="POST" class="bg-stone-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-stone-100 dark:border-slate-700/50 mt-4" x-data="{ rating: 0, hover: 0 }">
+                                                @csrf
+                                                <div class="mb-4">
+                                                    <label class="block text-xs font-semibold text-stone-600 dark:text-slate-400 mb-2">Beri Nilai Penanganan Laporan Ini</label>
+                                                    <div class="flex items-center gap-1" @mouseleave="hover = 0">
+                                                        <input type="hidden" name="rating" x-model="rating">
+                                                        <template x-for="i in 5" :key="i">
+                                                            <button type="button" 
+                                                                @mouseover="hover = i" 
+                                                                @click="rating = i"
+                                                                class="focus:outline-none transition-transform hover:scale-110">
+                                                                <svg class="w-8 h-8 transition-colors" 
+                                                                    :class="(hover >= i || (!hover && rating >= i)) ? 'text-amber-400 fill-amber-400' : 'text-stone-300 dark:text-slate-600'" 
+                                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                                </svg>
+                                                            </button>
+                                                        </template>
+                                                    </div>
+                                                    @error('rating')
+                                                    <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                                    @enderror
+                                                </div>
+                                                <div class="mb-4" x-show="rating > 0" x-transition>
+                                                    <label for="ulasan" class="block text-xs font-semibold text-stone-600 dark:text-slate-400 mb-2">Ulasan (Opsional)</label>
+                                                    <textarea name="ulasan" id="ulasan" rows="3" placeholder="Tuliskan pengalaman atau saran Anda..."
+                                                        class="w-full bg-white dark:bg-slate-800 border border-stone-200 dark:border-slate-700 text-stone-800 dark:text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition resize-none"></textarea>
+                                                </div>
+                                                <div class="flex gap-2">
+                                                    <button type="button" @click="tampilForm = false" class="flex-1 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-sm py-2.5 rounded-xl transition">
+                                                        Batal
+                                                    </button>
+                                                    <button type="submit" x-show="rating > 0" x-transition
+                                                        class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm py-2.5 rounded-xl transition shadow-md shadow-amber-500/20">
+                                                        Kirim Ulasan
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @else
+                                    <!-- Review Form -->
+                                    <form action="{{ route('lacak.ulasan', $dataLaporan->id) }}" method="POST" class="bg-stone-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-stone-100 dark:border-slate-700/50" x-data="{ rating: 0, hover: 0 }">
+                                        @csrf
+                                        <div class="mb-4">
+                                            <label class="block text-xs font-semibold text-stone-600 dark:text-slate-400 mb-2">Beri Nilai Penanganan Laporan Ini</label>
+                                            <div class="flex items-center gap-1" @mouseleave="hover = 0">
+                                                <input type="hidden" name="rating" x-model="rating">
+                                                <template x-for="i in 5" :key="i">
+                                                    <button type="button" 
+                                                        @mouseover="hover = i" 
+                                                        @click="rating = i"
+                                                        class="focus:outline-none transition-transform hover:scale-110">
+                                                        <svg class="w-8 h-8 transition-colors" 
+                                                            :class="(hover >= i || (!hover && rating >= i)) ? 'text-amber-400 fill-amber-400' : 'text-stone-300 dark:text-slate-600'" 
+                                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                        </svg>
+                                                    </button>
+                                                </template>
+                                            </div>
+                                            @error('rating')
+                                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-4" x-show="rating > 0" x-transition>
+                                            <label for="ulasan" class="block text-xs font-semibold text-stone-600 dark:text-slate-400 mb-2">Ulasan (Opsional)</label>
+                                            <textarea name="ulasan" id="ulasan" rows="3" placeholder="Tuliskan pengalaman atau saran Anda..."
+                                                class="w-full bg-white dark:bg-slate-800 border border-stone-200 dark:border-slate-700 text-stone-800 dark:text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition resize-none"></textarea>
+                                        </div>
+                                        <button type="submit" x-show="rating > 0" x-transition
+                                            class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm py-2.5 rounded-xl transition shadow-md shadow-amber-500/20">
+                                            Kirim Ulasan
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -361,6 +482,17 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if(session('sukses_ulasan'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session("sukses_ulasan") }}',
+            confirmButtonColor: '#f97316'
+        });
+    </script>
+    @endif
 </body>
 
 </html>

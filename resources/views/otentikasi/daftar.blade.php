@@ -37,7 +37,7 @@
 
     <div class="fixed inset-0 z-0 pointer-events-none">
         <img src="{{ asset('images/portal/section-background-texture.png') }}" alt=""
-            class="w-full h-full object-cover opacity-40 dark:invert dark:hue-rotate-180 dark:opacity-70"
+            class="w-full h-full object-cover opacity-50 dark:invert dark:hue-rotate-180 dark:opacity-50"
             aria-hidden="true">
     </div>
 
