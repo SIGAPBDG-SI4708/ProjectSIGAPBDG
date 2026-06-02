@@ -37,6 +37,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('/pengajuan/{id}/ajukan-ulang', [PengajuanDanaController::class, 'ajukanUlang'])->name('pengajuan.ajukan-ulang');
     Route::get('/peta', [AdminController::class, 'tampilkanPeta'])->name('peta.indeks');
     Route::get('/api/titik-kejahatan', [AdminController::class, 'ambilDataTitikKejahatan'])->name('api.titik-kejahatan');
+    Route::get('/pegawai', [AdminController::class, 'tampilkanDaftarPegawai'])->name('pegawai.indeks');
+    Route::patch('/pegawai/{id}', [AdminController::class, 'perbaruiStatusPegawai'])->name('pegawai.perbarui');
     Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar');
 });
 

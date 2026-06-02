@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\LaporanInfrastruktur;
 use App\Models\LaporanKejahatan;
 use App\Models\AnalisisAi;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -97,5 +98,34 @@ class AdminController extends Controller
     {
         $daftarTitikKejahatan = LaporanKejahatan::select('latitude', 'longitude')->get();
         return response()->json($daftarTitikKejahatan);
+    }
+
+    public function tampilkanDaftarPegawai()
+    {
+        if (Auth::user()->role !== 'Super Admin') {
+            return abort(403, 'Akses khusus Super Admin.');
+        }
+
+        $daftarPegawai = User::where('role', 'Admin Daerah')->with('daerah')->latest()->paginate(15);
+        
+        return view('admin.pegawai.indeks', compact('daftarPegawai'));
+    }
+
+    public function perbaruiStatusPegawai(Request $request, $id)
+    {
+        if (Auth::user()->role !== 'Super Admin') {
+            return abort(403, 'Akses khusus Super Admin.');
+        }
+
+        $request->validate([
+            'status_akun' => ['required', 'in:aktif,nonaktif,ditolak'],
+        ]);
+
+        $pegawai = User::findOrFail($id);
+        $pegawai->update(['status_akun' => $request->status_akun]);
+
+        $pesan = $request->status_akun === 'aktif' ? 'Akun pegawai berhasil disetujui/diaktifkan.' : 'Akun pegawai telah ditolak/dinonaktifkan.';
+        
+        return back()->with('sukses', $pesan);
     }
 }
