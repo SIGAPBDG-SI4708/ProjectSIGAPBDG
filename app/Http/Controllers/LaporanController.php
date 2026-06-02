@@ -98,9 +98,16 @@ class LaporanController extends Controller
         return response()->json(['sukses' => true]);
     }
 
-    public function tampilkanFormLacak()
+    public function tampilkanFormLacak(Request $request)
     {
-        return view('laporan.lacak');
+        $kodeLacak = session('sukses_ulasan_tracking_id');
+        $dataLaporan = null;
+        
+        if ($kodeLacak) {
+            $dataLaporan = LaporanInfrastruktur::where('tracking_id', $kodeLacak)->first();
+        }
+        
+        return view('laporan.lacak', compact('dataLaporan', 'kodeLacak'));
     }
 
     public function prosesCariLaporan(Request $request)
@@ -113,5 +120,29 @@ class LaporanController extends Controller
         $dataLaporan = LaporanInfrastruktur::where('tracking_id', $kodeLacak)->first();
 
         return view('laporan.lacak', compact('dataLaporan', 'kodeLacak'));
+    }
+
+    public function simpanUlasan(Request $request, $id)
+    {
+        $request->validate([
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'ulasan' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $dataLaporan = LaporanInfrastruktur::findOrFail($id);
+
+        if ($dataLaporan->status !== 'Selesai') {
+            return back()->with('error', 'Laporan belum selesai.');
+        }
+
+        \App\Models\UlasanLaporan::create([
+            'laporan_infrastruktur_id' => $id,
+            'rating'     => $request->input('rating'),
+            'ulasan'     => $request->input('ulasan'),
+        ]);
+
+        return redirect()->route('lacak')
+            ->with('sukses_ulasan_tracking_id', $dataLaporan->tracking_id)
+            ->with('sukses_ulasan', 'Terima kasih! Ulasan Anda berhasil dikirim.');
     }
 }

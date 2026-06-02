@@ -15,6 +15,7 @@ Route::post('/lapor', [LaporanController::class, 'prosesSimpanLaporan'])->name('
 
 Route::get('/lacak', [LaporanController::class, 'tampilkanFormLacak'])->name('lacak');
 Route::post('/lacak', [LaporanController::class, 'prosesCariLaporan'])->name('proses.lacak');
+Route::post('/lacak/{id}/ulasan', [LaporanController::class, 'simpanUlasan'])->name('lacak.ulasan');
 
 Route::post('/lapor-kejahatan', [LaporanController::class, 'simpanKejahatan'])->name('lapor.kejahatan');
 

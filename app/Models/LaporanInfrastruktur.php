@@ -24,4 +24,9 @@ class LaporanInfrastruktur extends Model
     {
         return $this->hasMany(PengajuanDana::class, 'id_laporan');
     }
+
+    public function ulasanLaporan()
+    {
+        return $this->hasMany(UlasanLaporan::class, 'laporan_infrastruktur_id');
+    }
 }

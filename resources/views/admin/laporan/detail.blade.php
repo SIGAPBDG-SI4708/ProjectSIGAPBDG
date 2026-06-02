@@ -110,7 +110,25 @@
                     @endif
                 @endif
 
-
+                @if($dataLaporan->foto_selesai)
+                    <div
+                        class="bg-white dark:bg-slate-900 border border-green-200 dark:border-green-500/20 rounded-2xl overflow-hidden shadow-sm">
+                        <div class="px-5 py-4 border-b border-green-100 dark:border-green-500/10 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-green-500 dark:text-green-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <div class="text-sm font-bold text-green-600 dark:text-green-400">Foto Setelah Perbaikan</div>
+                        </div>
+                        <div class="p-5">
+                            <div
+                                class="rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-800 aspect-video border border-slate-100 dark:border-slate-700/50">
+                                <img src="{{ asset('storage/' . $dataLaporan->foto_selesai) }}" alt="Foto selesai"
+                                    class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <div class="space-y-5">
@@ -170,10 +188,10 @@
                             <div class="text-xs text-slate-500 dark:text-slate-400 mb-1.5">Status Saat Ini</div>
                             <span
                                 class="inline-flex items-center gap-1.5 text-sm font-bold px-3 py-1.5 rounded-lg border
-                                                                                        {{ $dataLaporan->status === 'Menunggu' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/50' : '' }}
-                                                                                        {{ $dataLaporan->status === 'Proses' ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 border-brand-200 dark:border-brand-800/50' : '' }}
-                                                                                        {{ $dataLaporan->status === 'Selesai' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50' : '' }}
-                                                                                        {{ $dataLaporan->status === 'Ditolak' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/50' : ''}}">
+                                                                                            {{ $dataLaporan->status === 'Menunggu' ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/50' : '' }}
+                                                                                            {{ $dataLaporan->status === 'Proses' ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 border-brand-200 dark:border-brand-800/50' : '' }}
+                                                                                            {{ $dataLaporan->status === 'Selesai' ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50' : '' }}
+                                                                                            {{ $dataLaporan->status === 'Ditolak' ? 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800/50' : ''}}">
                                 {{ $dataLaporan->status}}
                             </span>
                         </div>

@@ -37,7 +37,19 @@ class AdminController extends Controller
         $danaDitolak = (clone $danaQuery)->where('status_approval', 'Ditolak')->sum('nominal_diajukan');
         $danaMenunggu = (clone $danaQuery)->where('status_approval', 'Menunggu')->sum('nominal_diajukan');
 
-        //
+        $chartRatingLabels = ['Bintang 1', 'Bintang 2', 'Bintang 3', 'Bintang 4', 'Bintang 5'];
+        $chartRatingData = [0, 0, 0, 0, 0];
+
+        $ratingQuery = \App\Models\UlasanLaporan::query();
+        if ($penggunaAktif->role !== 'Super Admin') {
+            $ratingQuery->whereHas('laporanInfrastruktur', function ($q) use ($penggunaAktif) {
+                $q->where('id_daerah', $penggunaAktif->id_daerah);
+            });
+        }
+        $ratings = $ratingQuery->selectRaw('rating, COUNT(*) as count')->groupBy('rating')->pluck('count', 'rating')->toArray();
+        for ($i = 1; $i <= 5; $i++) {
+            $chartRatingData[$i - 1] = $ratings[$i] ?? 0;
+        }
 
         if ($penggunaAktif->role === 'Super Admin') {
             $totalLaporan = LaporanInfrastruktur::count();
@@ -67,7 +79,9 @@ class AdminController extends Controller
             'chartTrendData',
             'danaDisetujui',
             'danaDitolak',
-            'danaMenunggu'
+            'danaMenunggu',
+            'chartRatingLabels',
+            'chartRatingData'
         ));
     }
 
