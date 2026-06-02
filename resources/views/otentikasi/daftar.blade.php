@@ -64,6 +64,10 @@
                     <input type="email" id="email" name="email" value="{{ old('email') }}" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition" placeholder="nama@email.com">
                 </div>
                 <div>
+                    <label for="nama_kecamatan" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Nama Kecamatan</label>
+                    <input type="text" id="nama_kecamatan" name="nama_kecamatan" value="{{ old('nama_kecamatan') }}" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition" placeholder="Contoh: Coblong">
+                </div>
+                <div>
                     <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Kata Sandi</label>
                     <input type="password" id="password" name="password" required class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition" placeholder="Minimal 8 karakter">
                 </div>

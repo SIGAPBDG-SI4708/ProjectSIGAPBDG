@@ -358,7 +358,8 @@
                     <ul class="space-y-3 text-sm text-brand-100 dark:text-slate-400">
                         <li>Darurat: 110</li>
                         <li>Email: info@sigapbdg.go.id</li>
-                        <li><a href="#" class="hover:text-white transition underline">Portal Administrator</a></li>
+                        <li><a href="/portal-internal" class="hover:text-white transition underline">Portal
+                                Administrator</a></li>
                     </ul>
                 </div>
             </div>

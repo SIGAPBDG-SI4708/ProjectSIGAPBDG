@@ -32,6 +32,25 @@ class OtentikasiController extends Controller
         ]);
 
         if (Auth::attempt($kredensial)) {
+            $pengguna = Auth::user();
+            if ($pengguna->status_akun !== 'aktif') {
+                $status = $pengguna->status_akun;
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                
+                $pesanError = 'Akun Anda belum disetujui Super Admin!';
+                if ($status === 'ditolak') {
+                    $pesanError = 'Pendaftaran akun Anda ditolak oleh Super Admin.';
+                } elseif ($status === 'nonaktif') {
+                    $pesanError = 'Akun Anda telah dinonaktifkan.';
+                }
+
+                return back()->withErrors([
+                    'email' => $pesanError,
+                ])->onlyInput('email');
+            }
+
             $request->session()->regenerate();
             return redirect()->intended(route('admin.beranda'));
         }
@@ -53,20 +72,49 @@ class OtentikasiController extends Controller
     {
         $dataValidasi = $request->validate([
             'nama' => ['required', 'string', 'max:255'],
+            'nama_kecamatan' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'min:8', 'confirmed'],
         ]);
 
-        $penggunaBaru = User::create([
+        $klienHttp = new \GuzzleHttp\Client([
+            'headers' => ['User-Agent' => 'SIGAP-BDG-App/1.0']
+        ]);
+        
+        try {
+            $respon = $klienHttp->get('https://nominatim.openstreetmap.org/search', [
+                'query' => [
+                    'q' => $dataValidasi['nama_kecamatan'] . ', Bandung',
+                    'format' => 'json',
+                    'limit' => 1
+                ]
+            ]);
+            $hasilLokasi = json_decode($respon->getBody(), true);
+            
+            if (empty($hasilLokasi)) {
+                return back()->withErrors(['nama_kecamatan' => 'Kecamatan tidak valid.'])->withInput();
+            }
+        } catch (\Exception $e) {
+            return back()->withErrors(['nama_kecamatan' => 'Gagal memverifikasi lokasi.'])->withInput();
+        }
+
+        $daerah = \App\Models\Daerah::firstOrCreate(
+            ['nama_daerah' => $dataValidasi['nama_kecamatan']],
+            [
+                'tingkat' => 'Kecamatan'
+            ]
+        );
+
+        User::create([
             'nama' => $dataValidasi['nama'],
             'email' => $dataValidasi['email'],
             'password' => bcrypt($dataValidasi['password']),
             'role' => 'Admin Daerah',
+            'id_daerah' => $daerah->id,
+            'status_akun' => 'menunggu',
         ]);
 
-        Auth::login($penggunaBaru);
-
-        return redirect()->route('admin.beranda');
+        return redirect()->route('masuk')->with('warning', 'Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan Super Admin.');
     }
 
     public function keluar(Request $request)

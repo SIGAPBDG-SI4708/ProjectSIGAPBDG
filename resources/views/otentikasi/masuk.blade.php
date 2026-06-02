@@ -22,6 +22,7 @@
         }
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>* { font-family: 'Inter', sans-serif; }</style>
 </head>
@@ -75,5 +76,24 @@
         </div>
     </div>
 
+    @if(session('warning'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var gelap = localStorage.getItem('temaGelap') === 'true';
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: '{{ session('warning') }}',
+                confirmButtonText: 'Mengerti',
+                customClass: {
+                    popup: 'swal-kustom-popup rounded-3xl',
+                    confirmButton: 'rounded-xl px-5 py-2.5 text-sm font-semibold bg-brand-600',
+                },
+                background: gelap ? '#0f172a' : '#ffffff',
+                color: gelap ? '#f1f5f9' : '#1e293b',
+            });
+        });
+    </script>
+    @endif
 </body>
 </html>
