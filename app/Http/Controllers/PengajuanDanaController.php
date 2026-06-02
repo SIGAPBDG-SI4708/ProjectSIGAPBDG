@@ -51,7 +51,11 @@ class PengajuanDanaController extends Controller
             ->latest()
             ->paginate(20);
 
-        return view('admin.keuangan.indeks', compact('daftarPengajuan'));
+        $danaDisetujui = PengajuanDana::where('status_approval', 'Disetujui')->sum('nominal_diajukan');
+        $danaDitolak = PengajuanDana::where('status_approval', 'Ditolak')->sum('nominal_diajukan');
+        $danaMenunggu = PengajuanDana::where('status_approval', 'Menunggu')->sum('nominal_diajukan');
+
+        return view('admin.keuangan.indeks', compact('daftarPengajuan', 'danaDisetujui', 'danaDitolak', 'danaMenunggu'));
     }
 
     public function prosesPersetujuan(Request $request, $id)
