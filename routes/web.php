@@ -39,15 +39,13 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/api/titik-kejahatan', [AdminController::class, 'ambilDataTitikKejahatan'])->name('api.titik-kejahatan');
     Route::get('/pegawai', [AdminController::class, 'tampilkanDaftarPegawai'])->name('pegawai.indeks');
     Route::patch('/pegawai/{id}', [AdminController::class, 'perbaruiStatusPegawai'])->name('pegawai.perbarui');
-    
-    // Chat Routes
+
     Route::get('/chat/contacts', [\App\Http\Controllers\ChatController::class, 'getContacts']);
     Route::get('/chat/search', [\App\Http\Controllers\ChatController::class, 'searchUsers']);
     Route::get('/chat/messages/{userId}', [\App\Http\Controllers\ChatController::class, 'getMessages']);
     Route::post('/chat/messages/{userId}', [\App\Http\Controllers\ChatController::class, 'sendMessage']);
     Route::patch('/chat/messages/{userId}/read', [\App\Http\Controllers\ChatController::class, 'markAsRead']);
 
-    // Notifications Routes
     Route::patch('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead']);
     Route::patch('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
 
