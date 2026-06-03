@@ -79,6 +79,13 @@ class LaporanController extends Controller
 
         \App\Services\LayananSimulasiAi::prosesAnalisis($laporanBaru->id, $fotoAwal);
 
+        $admins = \App\Models\User::where('role', 'Super Admin')
+            ->orWhere(function($query) use ($idDaerahTerpilih) {
+                $query->where('role', 'Admin Daerah')->where('id_daerah', $idDaerahTerpilih);
+            })->get();
+            
+        \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\LaporanMasukNotification($laporanBaru));
+
         event(new \App\Events\LaporanMasukEvent($laporanBaru));
 
         return back()->with('trackingBerhasil', $trackingId);

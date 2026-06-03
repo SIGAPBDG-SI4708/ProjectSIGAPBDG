@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="id"
-    x-data="{ temaGelap: localStorage.getItem('temaGelap') === 'true', tampilNotifikasi: false, jenisNotifikasi: '', pesanNotifikasi: '', judulNotifikasi: '', linkNotifikasi: '' }"
+    x-data="{ temaGelap: localStorage.getItem('temaGelap') === 'true', tampilNotifikasi: false, jenisNotifikasi: '', pesanNotifikasi: '', judulNotifikasi: '', linkNotifikasi: '', actionChat: null }"
     x-init="$watch('temaGelap', val => localStorage.setItem('temaGelap', val)); @if(session('success')) jenisNotifikasi = 'success'; judulNotifikasi = 'Berhasil!'; pesanNotifikasi = '{{ addslashes(session('success')) }}'; tampilNotifikasi = true; @elseif(session('warning')) jenisNotifikasi = 'warning'; judulNotifikasi = 'Perhatian!'; pesanNotifikasi = '{{ addslashes(session('warning')) }}'; tampilNotifikasi = true; @elseif(session('sukses')) jenisNotifikasi = 'success'; judulNotifikasi = 'Berhasil!'; pesanNotifikasi = '{{ addslashes(session('sukses')) }}'; tampilNotifikasi = true; @elseif($errors->any()) jenisNotifikasi = 'error'; judulNotifikasi = 'Terjadi Kesalahan!'; pesanNotifikasi = '{{ addslashes($errors->first()) }}'; tampilNotifikasi = true; @endif"
-    @tampilkan-notif.window="jenisNotifikasi = $event.detail.jenis; judulNotifikasi = $event.detail.judul; pesanNotifikasi = $event.detail.pesan; linkNotifikasi = $event.detail.link; tampilNotifikasi = true; setTimeout(() => { tampilNotifikasi = false }, 5000);"
+    @tampilkan-notif.window="jenisNotifikasi = $event.detail.jenis; judulNotifikasi = $event.detail.judul; pesanNotifikasi = $event.detail.pesan; linkNotifikasi = $event.detail.link; actionChat = $event.detail.actionChat; tampilNotifikasi = true; setTimeout(() => { tampilNotifikasi = false }, 5000);"
     :class="{ 'dark': temaGelap }">
 
 <head>
@@ -138,6 +138,17 @@
                 <div class="text-xs mt-0.5 opacity-75 leading-relaxed" x-text="pesanNotifikasi"></div>
                 <div x-show="linkNotifikasi" class="text-[10px] font-medium mt-1 text-blue-600 dark:text-blue-400">Klik
                     untuk melihat detail &rarr;</div>
+                <div x-show="actionChat" class="mt-2">
+                    <button
+                        @click.prevent="tampilNotifikasi = false; window.dispatchEvent(new CustomEvent('buka-chat', {detail: actionChat}));"
+                        class="text-xs font-bold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5 hover:bg-brand-100 dark:hover:bg-brand-900/50 transition">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                        </svg>
+                        Balas Pesan
+                    </button>
+                </div>
             </div>
             <button @click.prevent="tampilNotifikasi = false"
                 class="flex-shrink-0 opacity-40 hover:opacity-100 transition">
@@ -258,6 +269,120 @@
                     @yield('subjudulHalaman', 'SIGAP BDG Admin Panel')</p>
             </div>
             <div class="flex items-center gap-4">
+                <div x-data="{ notifOpen: false, unreadCount: {{ auth()->user()->unreadNotifications->count() }} }"
+                    @chat-dibaca-global.window="
+                        document.querySelectorAll('.notif-item-chat-' + $event.detail).forEach(el => {
+                            el.remove();
+                            if(unreadCount > 0) unreadCount--;
+                        });
+                     " class="relative">
+                    <button @click="notifOpen = !notifOpen"
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-stone-100 dark:bg-slate-800 hover:bg-stone-200 dark:hover:bg-slate-700 text-stone-500 dark:text-slate-400 hover:text-brand-500 transition shadow-inner relative">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span x-show="unreadCount > 0" x-text="unreadCount" style="display: none;"
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900"></span>
+                    </button>
+
+                    <div x-show="notifOpen" @click.away="notifOpen = false" style="display: none;"
+                        class="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-stone-200 dark:border-slate-700 overflow-hidden z-50">
+                        <div
+                            class="p-3 border-b border-stone-100 dark:border-slate-800 flex justify-between items-center bg-stone-50 dark:bg-slate-800/50">
+                            <h3 class="font-bold text-sm dark:text-white flex items-center gap-2">
+                                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                Notifikasi
+                            </h3>
+                            <button x-show="unreadCount > 0"
+                                @click="fetch('/admin/notifications/read-all', {method: 'PATCH', headers: {'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content}}).then(() => { unreadCount = 0; document.querySelectorAll('.notif-item').forEach(el => el.remove()) })"
+                                class="text-[10px] font-semibold text-brand-600 hover:underline">Tandai semua
+                                dibaca</button>
+                        </div>
+                        <div class="max-h-96 overflow-y-auto">
+                            @forelse(auth()->user()->notifications()->take(10)->get() as $notification)
+                                <div
+                                    class="notif-item p-4 border-b border-stone-50 dark:border-slate-800 {{ $notification->read_at ? '' : 'bg-brand-50 dark:bg-brand-900/20' }} {{ $notification->data['tipe'] === 'chat' ? 'notif-item-chat-' . $notification->data['sender_id'] : '' }}">
+                                    @if($notification->data['tipe'] === 'chat')
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center shrink-0">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-xs text-stone-800 dark:text-slate-200">
+                                                    <strong>{{ $notification->data['sender_nama'] }}</strong> mengirim pesan
+                                                    baru.
+                                                </p>
+                                                <p class="text-[11px] text-stone-500 dark:text-slate-400 mt-1 truncate">
+                                                    "{{ $notification->data['pesan'] }}"</p>
+                                                <div class="mt-2 flex items-center justify-between">
+                                                    <span
+                                                        class="text-[9px] text-stone-400">{{ $notification->created_at->diffForHumans() }}</span>
+                                                    <button
+                                                        @click="notifOpen = false; window.dispatchEvent(new CustomEvent('buka-chat', {detail: {{ $notification->data['sender_id'] }}})); fetch('/admin/notifications/{{ $notification->id }}/read', {method: 'PATCH', headers: {'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content}}).then(() => { if(unreadCount > 0) unreadCount--; $el.closest('.notif-item').remove(); });"
+                                                        class="text-[10px] text-brand-600 dark:text-brand-400 font-bold hover:underline flex items-center gap-1">
+                                                        <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                                                        </svg>
+                                                        Balas
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @elseif($notification->data['tipe'] === 'laporan')
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-xs text-stone-800 dark:text-slate-200"><strong>Laporan Baru
+                                                        Masuk!</strong></p>
+                                                <p class="text-[11px] text-stone-500 dark:text-slate-400 mt-1">Daerah:
+                                                    {{ $notification->data['daerah'] }}<br>Tracking ID: <span
+                                                        class="font-mono">{{ $notification->data['tracking_id'] }}</span>
+                                                </p>
+                                                <div class="mt-2 flex items-center justify-between">
+                                                    <span
+                                                        class="text-[9px] text-stone-400">{{ $notification->created_at->diffForHumans() }}</span>
+                                                    <a href="/admin/laporan/{{ $notification->data['id_laporan'] }}"
+                                                        @click="fetch('/admin/notifications/{{ $notification->id }}/read', {method: 'PATCH', headers: {'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content}})"
+                                                        class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold hover:underline flex items-center gap-1">
+                                                        Lihat Detail
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @empty
+                                <div
+                                    class="p-6 flex flex-col items-center justify-center text-stone-400 dark:text-slate-500">
+                                    <svg class="w-10 h-10 mb-2 opacity-30" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                    </svg>
+                                    <p class="text-xs font-medium">Belum ada notifikasi baru</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
                 <button @click="temaGelap = !temaGelap"
                     class="w-10 h-10 flex items-center justify-center rounded-full bg-stone-100 dark:bg-slate-800 hover:bg-stone-200 dark:hover:bg-slate-700 text-stone-500 dark:text-slate-400 hover:text-brand-500 transition shadow-inner">
                     <span x-show="!temaGelap"><svg class="w-5 h-5" fill="none" stroke="currentColor"
@@ -324,6 +449,7 @@
             });
         </script>
     @endauth
+    @include('admin.chat-widget')
 </body>
 
 </html>
