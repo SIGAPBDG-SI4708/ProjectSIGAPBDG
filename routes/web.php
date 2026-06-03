@@ -51,5 +51,5 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar');
 });
-
+//resolve
 Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar')->middleware('auth');
