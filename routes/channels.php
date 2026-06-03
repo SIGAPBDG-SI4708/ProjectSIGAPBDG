@@ -13,3 +13,7 @@ Broadcast::channel('laporan.masuk.{id_daerah}', function ($user, $id_daerah) {
 Broadcast::channel('laporan.masuk.semua', function ($user) {
     return $user->role === 'Super Admin';
 });
+
+Broadcast::channel('chat.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});
