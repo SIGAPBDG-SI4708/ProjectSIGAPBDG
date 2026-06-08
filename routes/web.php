@@ -18,6 +18,10 @@ Route::post('/lacak/{id}/ulasan', [LaporanController::class, 'simpanUlasan'])->n
 
 Route::post('/lapor-kejahatan', [LaporanController::class, 'simpanKejahatan'])->name('lapor.kejahatan');
 
+Route::post('/chatbot/kirim', [\App\Http\Controllers\MinGapChatbotController::class, 'kirimPesan'])->name('chatbot.kirim');
+Route::post('/chatbot/reset', [\App\Http\Controllers\MinGapChatbotController::class, 'bersihkanRiwayat'])->name('chatbot.reset');
+Route::get('/chatbot/riwayat', [\App\Http\Controllers\MinGapChatbotController::class, 'ambilRiwayat'])->name('chatbot.riwayat');
+
 Route::prefix('portal-internal')->middleware('guest')->group(function () {
     Route::get('/', [OtentikasiController::class, 'tampilkanSambutan'])->name('sambutan');
     Route::get('/login', [OtentikasiController::class, 'tampilkanMasuk'])->name('masuk');
