@@ -49,6 +49,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead']);
     Route::patch('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
 
+    Route::get('/asisten-ai', [\App\Http\Controllers\AdminChatbotController::class, 'indeks'])->name('asisten-ai.indeks');
+    Route::post('/asisten-ai/kirim', [\App\Http\Controllers\AdminChatbotController::class, 'kirimPesan'])->name('asisten-ai.kirim');
+    Route::post('/asisten-ai/reset', [\App\Http\Controllers\AdminChatbotController::class, 'bersihkanRiwayat'])->name('asisten-ai.reset');
+    Route::get('/asisten-ai/riwayat', [\App\Http\Controllers\AdminChatbotController::class, 'ambilRiwayat'])->name('asisten-ai.riwayat');
+
     Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar');
 });
 
