@@ -24,4 +24,18 @@ class LaporanInfrastruktur extends Model
     {
         return $this->hasMany(PengajuanDana::class, 'id_laporan');
     }
+
+    // =========================================================
+    // SPRINT 4 - FEATURE 5: Audit Fisik & Timeline [Dev 5]
+    // =========================================================
+    public function ulasanLaporan()
+    {
+        return $this->hasMany(UlasanLaporan::class, 'laporan_infrastruktur_id');
+    }
+
+    public function timeline()
+    {
+        return $this->hasMany(LaporanTimeline::class, 'laporan_infrastruktur_id')->oldest();
+    }
+    // =========================================================
 }
