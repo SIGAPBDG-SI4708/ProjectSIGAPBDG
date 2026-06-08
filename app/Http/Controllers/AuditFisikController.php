@@ -49,24 +49,6 @@ class AuditFisikController extends Controller
                 'status' => $statusBaru,
                 'deskripsi' => $deskripsiTimeline,
             ]);
-
-            if ($statusBaru === 'Proses') {
-                \App\Models\PoinKontribusiDaerah::create([
-                    'id_daerah' => $dataLaporan->id_daerah,
-                    'laporan_infrastruktur_id' => $dataLaporan->id,
-                    'poin' => 20,
-                    'kategori' => 'Respon Cepat',
-                    'deskripsi' => 'Respon cepat pembaruan status laporan menjadi Proses oleh Admin Daerah.',
-                ]);
-            } elseif ($statusBaru === 'Selesai') {
-                \App\Models\PoinKontribusiDaerah::create([
-                    'id_daerah' => $dataLaporan->id_daerah,
-                    'laporan_infrastruktur_id' => $dataLaporan->id,
-                    'poin' => 50,
-                    'kategori' => 'Penyelesaian',
-                    'deskripsi' => 'Penyelesaian perbaikan infrastruktur secara fisik di lapangan.',
-                ]);
-            }
         }
 
         return redirect()->route('admin.laporan.detail', $id)->with('sukses', 'Status laporan berhasil diperbarui menjadi "' . $statusBaru . '".');

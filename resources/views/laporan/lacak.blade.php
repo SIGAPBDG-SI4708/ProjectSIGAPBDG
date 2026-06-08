@@ -272,19 +272,7 @@
                                 <div class="text-xs font-mono text-brand-500 dark:text-brand-400">{{ $dataLaporan->longitude }}</div>
                             </div>
                         </div>
-
-                        <div>
-                            <div class="text-xs text-stone-400 dark:text-slate-500 mb-2 font-medium">Foto Laporan Awal</div>
-                            <div class="rounded-2xl overflow-hidden bg-stone-100 dark:bg-slate-900 aspect-video flex items-center justify-center border border-stone-200 dark:border-slate-700/50">
-                                <img
-                                    src="{{ asset('storage/' . $dataLaporan->foto_awal) }}"
-                                    alt="Foto kerusakan"
-                                    class="w-full h-full object-cover"
-                                    onerror="this.parentElement.innerHTML='<div class=\'text-stone-400 dark:text-slate-600 text-sm flex flex-col items-center gap-2\'><svg class=\'w-8 h-8\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\'/></svg>Foto tidak tersedia</div>'"
-                                >
-                            </div>
-                        </div>
-
+                        
                         <div class="mb-6 pt-5 border-t border-stone-100 dark:border-slate-700/50">
                             <div class="text-sm font-bold text-stone-800 dark:text-white mb-4 flex items-center gap-2">
                                 <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -339,7 +327,7 @@
                                     </span>
                                     <span class="text-[10px] text-stone-400 font-mono">Sebelum vs Sesudah</span>
                                 </div>
-                                <div class="relative w-full aspect-video rounded-2xl overflow-hidden select-none border border-stone-200 dark:border-slate-700/50 shadow-inner shadow-lg" x-data="{ sliderVal: 50 }">
+                                <div class="relative w-full aspect-video rounded-2xl overflow-hidden select-none border border-stone-200 dark:border-slate-700/50 shadow-inner" x-data="{ sliderVal: 50 }">
                                     <!-- Before Image (Background) -->
                                     <img src="{{ asset('storage/' . $dataLaporan->foto_selesai) }}" class="absolute inset-0 w-full h-full object-cover" alt="Sebelum Perbaikan">
                                     <div class="absolute left-4 top-4 bg-black/60 backdrop-blur-sm text-white px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider z-20">
@@ -349,15 +337,15 @@
                                     <!-- After Image (Overlay, clipped from the right side) -->
                                     <img src="{{ asset('storage/' . $dataLaporan->foto_awal) }}" 
                                         class="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" 
-                                        :style="'clip-path: inset(0 ' + (100 - sliderVal) + '% 0 0)'"
+                                        :style="`clip-path: inset(0 ${100 - sliderVal}% 0 0)`"
                                         alt="Setelah Perbaikan">
-                                    <div class="absolute right-4 top-4 bg-brand-50 text-black px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider z-20 shadow-lg"
-                                        :style="'opacity: ' + (sliderVal > 15 ? 1 : 0) + '; transition: opacity 0.2s;'">
+                                    <div class="absolute right-4 top-4 bg-brand-50 text-black px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider z-20"
+                                        :style="`opacity: ${sliderVal > 15 ? 1 : 0}; transition: opacity 0.2s;` shadow-lg">
                                         Sesudah
                                     </div>
                                     
                                     <!-- Slide Handle Line -->
-                                    <div class="absolute top-0 bottom-0 w-0.5 bg-white z-20 pointer-events-none shadow shadow-lg" :style="'left: ' + sliderVal + '%'">
+                                    <div class="absolute top-0 bottom-0 w-0.5 bg-white z-20 pointer-events-none shadow" :style="`left: ${sliderVal}%` shadow-lg">
                                         <!-- Slide Handle Button -->
                                         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-slate-800 dark:text-slate-900 shadow-xl flex items-center justify-center border border-slate-200 dark:border-slate-700 cursor-ew-resize">
                                             <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
