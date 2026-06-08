@@ -77,6 +77,20 @@ class LaporanController extends Controller
             'status'      => 'Menunggu',
         ]);
 
+        \App\Models\LaporanTimeline::create([
+            'laporan_infrastruktur_id' => $laporanBaru->id,
+            'status' => 'Menunggu',
+            'deskripsi' => 'Laporan berhasil dibuat oleh warga dengan nomor tracking ID: ' . $trackingId . ' dan sedang menunggu verifikasi oleh Admin.',
+        ]);
+
+        \App\Models\PoinKontribusiDaerah::create([
+            'id_daerah' => $laporanBaru->id_daerah,
+            'laporan_infrastruktur_id' => $laporanBaru->id,
+            'poin' => 10,
+            'kategori' => 'Laporan Baru',
+            'deskripsi' => 'Apresiasi partisipasi warga melaporkan infrastruktur rusak dengan ID: ' . $trackingId,
+        ]);
+
         \App\Services\LayananSimulasiAi::prosesAnalisis($laporanBaru->id, $fotoAwal);
 
         $admins = \App\Models\User::where('role', 'Super Admin')
@@ -144,10 +158,21 @@ class LaporanController extends Controller
             return back()->with('error', 'Laporan belum selesai.');
         }
 
+        $ratingInput = (int) $request->input('rating');
+        $poinUlasan = $ratingInput * 10;
+
         \App\Models\UlasanLaporan::create([
             'laporan_infrastruktur_id' => $id,
-            'rating'     => $request->input('rating'),
+            'rating'     => $ratingInput,
             'ulasan'     => $request->input('ulasan'),
+        ]);
+
+        \App\Models\PoinKontribusiDaerah::create([
+            'id_daerah' => $dataLaporan->id_daerah,
+            'laporan_infrastruktur_id' => $dataLaporan->id,
+            'poin' => $poinUlasan,
+            'kategori' => 'Ulasan Warga',
+            'deskripsi' => 'Apresiasi ulasan warga dengan rating ' . $ratingInput . ' bintang.',
         ]);
 
         return redirect()->route('lacak')

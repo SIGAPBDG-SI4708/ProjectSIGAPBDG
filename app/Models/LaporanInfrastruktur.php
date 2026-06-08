@@ -29,4 +29,9 @@ class LaporanInfrastruktur extends Model
     {
         return $this->hasMany(UlasanLaporan::class, 'laporan_infrastruktur_id');
     }
+
+    public function timeline()
+    {
+        return $this->hasMany(LaporanTimeline::class, 'laporan_infrastruktur_id')->oldest();
+    }
 }
