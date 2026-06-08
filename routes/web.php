@@ -17,6 +17,11 @@ Route::post('/lapor', [LaporanController::class, 'prosesSimpanLaporan'])->name('
 
 Route::get('/lacak', [LaporanController::class, 'tampilkanFormLacak'])->name('lacak');
 Route::post('/lacak', [LaporanController::class, 'prosesCariLaporan'])->name('proses.lacak');
+// =========================================================
+// SPRINT 4 - FEATURE 5: Audit Fisik & Timeline [Dev 5]
+// =========================================================
+Route::post('/lacak/{id}/ulasan', [LaporanController::class, 'simpanUlasan'])->name('lacak.ulasan');
+// =========================================================
 
 Route::post('/lapor-kejahatan', [LaporanController::class, 'simpanKejahatan'])->name('lapor.kejahatan');
 
@@ -35,7 +40,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'tampilkanBeranda'])->name('beranda');
     Route::get('/laporan', [AdminController::class, 'tampilkanDaftarLaporan'])->name('laporan.indeks');
     Route::get('/laporan/{id}', [AdminController::class, 'tampilkanDetailLaporan'])->name('laporan.detail');
-    Route::patch('/laporan/{id}', [AdminController::class, 'perbaruiStatusLaporan'])->name('laporan.perbarui');
+    // =========================================================
+    // SPRINT 4 - FEATURE 5: Audit Fisik & Timeline [Dev 5]
+    // =========================================================
+    Route::patch('/laporan/{id}', [\App\Http\Controllers\AuditFisikController::class, 'perbaruiStatusLaporan'])->name('laporan.perbarui');
+    // =========================================================
     Route::get('/keuangan', [PengajuanDanaController::class, 'tampilkanDaftarPengajuan'])->name('keuangan.indeks');
     Route::post('/pengajuan', [PengajuanDanaController::class, 'simpanPengajuan'])->name('pengajuan.simpan');
     Route::post('/pengajuan/{id}/proses', [PengajuanDanaController::class, 'prosesPersetujuan'])->name('pengajuan.proses');
