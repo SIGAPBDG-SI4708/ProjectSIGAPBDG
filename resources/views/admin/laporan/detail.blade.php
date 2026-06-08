@@ -158,38 +158,92 @@
                 </div>
             </div>
 
-            <div class="bg-gray-900 border border-indigo-500/20 rounded-2xl p-5">
+            <!-- ========================================================= -->
+            <!-- SPRINT 4 - FEATURE 5: Audit Fisik & Timeline [Dev 5] -->
+            <!-- ========================================================= -->
+            <div class="bg-gray-900 border border-white/5 rounded-2xl p-5" x-data="{ statusPilihan: '{{ $dataLaporan->status }}', namaFile: '' }">
+                <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+                <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+                
                 <div class="text-sm font-bold text-white mb-1">Perbarui Status</div>
                 <div class="text-xs text-gray-500 mb-4">Ubah status penanganan laporan ini</div>
 
-                <form action="{{ route('admin.laporan.perbarui', $dataLaporan->id) }}" method="POST">
+                <form action="{{ route('admin.laporan.perbarui', $dataLaporan->id) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')
 
-                    <div class="mb-4">
-                        <label for="statusBaru" class="block text-xs text-gray-400 font-medium mb-2">Pilih Status Baru</label>
-                        <select name="status" id="statusBaru"
-                            class="w-full bg-gray-800 border border-gray-700 text-white text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent appearance-none cursor-pointer">
-                            <option value="Menunggu" {{ $dataLaporan->status === 'Menunggu' ? 'selected' : '' }}>⏳ Menunggu</option>
-                            <option value="Proses"   {{ $dataLaporan->status === 'Proses'   ? 'selected' : '' }}>🔄 Proses</option>
-                            <option value="Selesai"  {{ $dataLaporan->status === 'Selesai'  ? 'selected' : '' }}>✅ Selesai</option>
-                        </select>
+                    <div class="mb-5">
+                        <label class="block text-xs text-gray-400 font-medium mb-3">Pilih Status Baru</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="status" value="Menunggu" x-model="statusPilihan"
+                                    class="peer sr-only">
+                                <div
+                                    class="w-full text-center px-3 py-2 text-xs font-semibold rounded-xl border transition-all peer-checked:bg-yellow-500/20 peer-checked:text-yellow-400 peer-checked:border-yellow-500/30 bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700">
+                                    Menunggu
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="status" value="Proses" x-model="statusPilihan"
+                                    class="peer sr-only">
+                                <div
+                                    class="w-full text-center px-3 py-2 text-xs font-semibold rounded-xl border transition-all peer-checked:bg-blue-500/20 peer-checked:text-blue-400 peer-checked:border-blue-500/30 bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700">
+                                    Proses
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="status" value="Selesai" x-model="statusPilihan"
+                                    class="peer sr-only">
+                                <div
+                                    class="w-full text-center px-3 py-2 text-xs font-semibold rounded-xl border transition-all peer-checked:bg-green-500/20 peer-checked:text-green-400 peer-checked:border-green-500/30 bg-gray-800 border-gray-700 text-gray-400 hover:bg-gray-700">
+                                    Selesai
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div x-show="statusPilihan === 'Selesai'" x-collapse class="mb-5">
+                        <label class="block text-xs text-gray-400 font-medium mb-2">Unggah Foto Perbaikan (Wajib)</label>
+                        <div class="relative group" x-data="{ isDragging: false }" @dragover.prevent="isDragging = true"
+                            @dragleave.prevent="isDragging = false"
+                            @drop.prevent="isDragging = false; const dt = $event.dataTransfer; if(dt.files.length) { $refs.fileInput.files = dt.files; namaFile = dt.files[0].name; }">
+                            <input type="file" name="foto_selesai" id="foto_selesai" accept="image/*" x-ref="fileInput"
+                                class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                @change="namaFile = $event.target.files.length > 0 ? $event.target.files[0].name : ''"
+                                :required="statusPilihan === 'Selesai'">
+                            <div :class="{'border-blue-500 bg-blue-500/10': isDragging, 'border-gray-700 bg-gray-800': !isDragging}"
+                                class="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl transition-colors duration-200 group-hover:border-blue-400">
+                                <svg class="w-8 h-8 text-gray-500 mb-2" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                                <div class="text-sm font-medium text-gray-300">
+                                    <span x-text="namaFile ? namaFile : 'Drag and drop foto ke sini'"></span>
+                                </div>
+                                <div x-show="!namaFile" class="text-xs text-gray-500 mt-1">atau klik untuk menelusuri</div>
+                            </div>
+                        </div>
+                        @error('foto_selesai')
+                            <div class="mt-1.5 text-xs text-red-400">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     @error('status')
-                    <div class="mb-3 text-xs text-red-400">{{ $message }}</div>
+                        <div class="mb-3 text-xs text-red-400">{{ $message }}</div>
                     @enderror
 
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm py-2.5 rounded-xl transition flex items-center justify-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm py-2.5 rounded-xl transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
                         Simpan Perubahan
                     </button>
                 </form>
-
-                <div class="mt-4 pt-4 border-t border-white/5">
-                    <div class="text-xs text-gray-600 text-center">Alur: Menunggu → Proses → Selesai</div>
-                </div>
             </div>
+            <!-- ========================================================= -->
 
             @if(Auth::user()->role === 'Admin Daerah' && $dataLaporan->analisisAi && !$dataLaporan->analisisAi->is_spam)
             <div class="bg-gray-900 border border-orange-500/20 rounded-2xl p-5">
@@ -233,6 +287,43 @@
                 </div>
             </div>
             @endif
+
+            <!-- ========================================================= -->
+            <!-- SPRINT 4 - FEATURE 5: Audit Fisik & Timeline [Dev 5] -->
+            <!-- ========================================================= -->
+            @if($dataLaporan->ulasanLaporan->count() > 0)
+            <div class="bg-gray-900 border border-white/5 rounded-2xl p-5">
+                <div class="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                    Ulasan dari Warga ({{ $dataLaporan->ulasanLaporan->count() }})
+                </div>
+                <div class="space-y-3 max-h-64 overflow-y-auto pr-2">
+                    @foreach($dataLaporan->ulasanLaporan as $ulasanData)
+                        <div class="bg-gray-800/50 p-4 rounded-xl border border-white/5">
+                            <div class="flex items-center gap-1 mb-2">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <svg class="w-5 h-5 {{ $i <= $ulasanData->rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600' }}"
+                                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                    </svg>
+                                @endfor
+                                <span class="text-xs text-gray-500 ml-auto">{{ $ulasanData->created_at->diffForHumans() }}</span>
+                            </div>
+                            @if($ulasanData->ulasan)
+                                <p class="text-sm text-gray-300 italic">"{{ $ulasanData->ulasan }}"</p>
+                            @else
+                                <p class="text-sm text-gray-500 italic">(Tidak ada ulasan tertulis)</p>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+            <!-- ========================================================= -->
 
         </div>
     </div>
