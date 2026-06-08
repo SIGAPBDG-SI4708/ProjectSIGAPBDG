@@ -56,7 +56,6 @@ class AdminChatbotController extends Controller
 
                 $prompt .= "\nBerikan ringkasan laporan, analisis kewajaran anggaran yang diajukan, rekomendasi prioritas perbaikan, serta saran keputusan yang harus diambil admin (Setujui/Tolak/Minta Penyesuaian) beserta pertimbangan rasionalnya.";
 
-                // Hapus riwayat chat lama dan buat baru khusus untuk analisis laporan ini
                 session()->forget('admin_chat_history');
                 
                 $jawaban = $this->aiService->tanyaAi($prompt, []);
