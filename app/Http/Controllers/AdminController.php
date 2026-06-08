@@ -69,25 +69,6 @@ class AdminController extends Controller
         return view('admin.laporan.detail', compact('dataLaporan'));
     }
 
-    public function perbaruiStatusLaporan(Request $request, $id)
-    {
-        $request->validate([
-            'status' => ['required', 'in:Menunggu,Proses,Selesai'],
-        ]);
-
-        $penggunaAktif = Auth::user();
-
-        if ($penggunaAktif->role === 'Super Admin') {
-            $dataLaporan = LaporanInfrastruktur::findOrFail($id);
-        } else {
-            $dataLaporan = LaporanInfrastruktur::where('id_daerah', $penggunaAktif->id_daerah)->findOrFail($id);
-        }
-
-        $statusBaru = $request->input('status');
-        $dataLaporan->update(['status' => $statusBaru]);
-
-        return redirect()->route('admin.laporan.detail', $id)->with('sukses', 'Status laporan berhasil diperbarui menjadi "' . $statusBaru . '".');
-    }
     public function tampilkanPeta()
     {
         return view('admin.peta.indeks');
