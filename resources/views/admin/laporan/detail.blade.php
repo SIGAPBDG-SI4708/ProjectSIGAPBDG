@@ -294,7 +294,7 @@
                     </div>
                 @endif
 
-                @if(Auth::user()->role === 'Admin Daerah' && $dataLaporan->status !== 'Selesai' && $dataLaporan->status !== 'Ditolak' && $dataLaporan->analisisAi && !$dataLaporan->analisisAi->is_spam)
+                @if(Auth::user()->role === 'Admin Daerah' && $dataLaporan->status === 'Proses' && $dataLaporan->analisisAi && !$dataLaporan->analisisAi->is_spam)
                     @php
                         $pengajuanTerkini = $dataLaporan->pengajuanDana->sortByDesc('waktu_pengajuan')->first();
                     @endphp
@@ -334,8 +334,8 @@
                             </div>
                         @elseif($pengajuanTerkini->status_approval === 'Disetujui')
                             <div
-                                class="flex items-center gap-2.5 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl px-4 py-3">
-                                <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 flex-shrink-0" fill="none"
+                                class="flex items-start gap-2.5 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl px-4 py-3">
+                                <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 flex-shrink-0 mt-0.5" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
@@ -344,12 +344,17 @@
                                     <div class="text-emerald-500 dark:text-emerald-400/60 text-xs mt-0.5">Nominal: Rp
                                         {{ number_format($pengajuanTerkini->nominal_diajukan, 0, ',', '.') }}
                                     </div>
+                                    @if($pengajuanTerkini->catatan_approval)
+                                        <div class="mt-2 text-xs text-emerald-700 dark:text-emerald-400/80 bg-emerald-100/50 dark:bg-emerald-950/40 p-2 rounded-lg border border-emerald-200/55 dark:border-emerald-900/30">
+                                            <span class="font-bold">Catatan Super Admin:</span> "{{ $pengajuanTerkini->catatan_approval }}"
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @elseif($pengajuanTerkini->status_approval === 'Ditolak')
                             <div
-                                class="flex items-center gap-2.5 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3 mb-3">
-                                <svg class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0" fill="none" stroke="currentColor"
+                                class="flex items-start gap-2.5 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3 mb-3">
+                                <svg class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12" />
@@ -360,6 +365,11 @@
                                     <div class="text-red-500 dark:text-red-400/60 text-xs mt-0.5">Nominal sebelumnya: Rp
                                         {{ number_format($pengajuanTerkini->nominal_diajukan, 0, ',', '.') }}
                                     </div>
+                                    @if($pengajuanTerkini->catatan_approval)
+                                        <div class="mt-2 text-xs text-red-700 dark:text-red-400/80 bg-red-100/50 dark:bg-red-950/40 p-2 rounded-lg border border-red-200/55 dark:border-red-900/30">
+                                            <span class="font-bold">Catatan Super Admin:</span> "{{ $pengajuanTerkini->catatan_approval }}"
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <button type="button" @click="bukaModal = true"
