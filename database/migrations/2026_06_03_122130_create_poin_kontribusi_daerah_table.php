@@ -1,9 +1,5 @@
 <?php
 
-// =========================================================
-// SPRINT 4 - FEATURE 6: Leaderboard & Poin Daerah [Dev 6]
-// =========================================================
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

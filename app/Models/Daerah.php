@@ -24,4 +24,8 @@ class Daerah extends Model
     {
         return $this->hasMany(LaporanKejahatan::class, 'id_daerah');
     }
+        public function poinKontribusi()
+    {
+        return $this->hasMany(PoinKontribusiDaerah::class, 'id_daerah');
+    }
 }
