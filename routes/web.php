@@ -40,7 +40,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/ekspor', [\App\Http\Controllers\LaporanEksporController::class, 'indeks'])->name('ekspor.indeks');
     Route::get('/ekspor/csv', [\App\Http\Controllers\LaporanEksporController::class, 'eksporCsv'])->name('ekspor.csv');
     Route::get('/ekspor/pdf', [\App\Http\Controllers\LaporanEksporController::class, 'eksporPdf'])->name('ekspor.pdf');
-    Route::get('/keuangan', [PengajuanDanaController::class, 'tampilkanDaftarPengajuan'])->name('keuangan.indeks');
     Route::post('/pengajuan', [PengajuanDanaController::class, 'simpanPengajuan'])->name('pengajuan.simpan');
     Route::post('/pengajuan/{id}/proses', [PengajuanDanaController::class, 'prosesPersetujuan'])->name('pengajuan.proses');
     Route::post('/pengajuan/{id}/ajukan-ulang', [PengajuanDanaController::class, 'ajukanUlang'])->name('pengajuan.ajukan-ulang');
