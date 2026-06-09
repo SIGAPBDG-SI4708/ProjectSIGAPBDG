@@ -37,7 +37,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('/laporan/{id}', [\App\Http\Controllers\AuditFisikController::class, 'perbaruiStatusLaporan'])->name('laporan.perbarui');
     Route::get('/keuangan', [\App\Http\Controllers\AuditDanaController::class, 'tampilkanDaftarAudit'])->name('keuangan.indeks');
     Route::post('/pengajuan/{id}/proses-audit', [\App\Http\Controllers\AuditDanaController::class, 'prosesPersetujuanAudit'])->name('pengajuan.proses-audit');
-    Route::get('/keuangan', [PengajuanDanaController::class, 'tampilkanDaftarPengajuan'])->name('keuangan.indeks');
     Route::post('/pengajuan', [PengajuanDanaController::class, 'simpanPengajuan'])->name('pengajuan.simpan');
     Route::post('/pengajuan/{id}/proses', [PengajuanDanaController::class, 'prosesPersetujuan'])->name('pengajuan.proses');
     Route::post('/pengajuan/{id}/ajukan-ulang', [PengajuanDanaController::class, 'ajukanUlang'])->name('pengajuan.ajukan-ulang');
