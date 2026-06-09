@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('poin_kontribusi_daerah', function (Blueprint $table) {
@@ -25,10 +23,8 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Seeding data poin historis secara otomatis
         $laporans = \DB::table('laporan_infrastruktur')->get();
         foreach ($laporans as $laporan) {
-            // 1. Setiap laporan masuk mendapatkan +10 poin kontribusi daerah (Partisipasi Warga)
             \DB::table('poin_kontribusi_daerah')->insert([
                 'id_daerah' => $laporan->id_daerah,
                 'laporan_infrastruktur_id' => $laporan->id,
@@ -39,7 +35,6 @@ return new class extends Migration
                 'updated_at' => $laporan->created_at,
             ]);
 
-            // 2. Laporan dengan status "Proses" atau "Selesai" mendapat tambahan +20 poin (Respon Cepat)
             if (in_array($laporan->status, ['Proses', 'Selesai'])) {
                 $waktuProses = \Carbon\Carbon::parse($laporan->created_at)->addMinutes(15);
                 \DB::table('poin_kontribusi_daerah')->insert([
@@ -53,7 +48,6 @@ return new class extends Migration
                 ]);
             }
 
-            // 3. Laporan dengan status "Selesai" mendapat tambahan +50 poin (Penyelesaian Fisik)
             if ($laporan->status === 'Selesai') {
                 \DB::table('poin_kontribusi_daerah')->insert([
                     'id_daerah' => $laporan->id_daerah,
@@ -67,7 +61,6 @@ return new class extends Migration
             }
         }
 
-        // 4. Seeding data poin untuk setiap ulasan/rating warga yang sudah ada
         $ulasans = \DB::table('ulasan_laporan')->get();
         foreach ($ulasans as $ulasan) {
             $laporan = \DB::table('laporan_infrastruktur')->find($ulasan->laporan_infrastruktur_id);
@@ -86,13 +79,10 @@ return new class extends Migration
         }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('poin_kontribusi_daerah');
     }
 };
 
-// =========================================================
+

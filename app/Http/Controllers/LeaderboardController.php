@@ -23,7 +23,6 @@ class LeaderboardController extends Controller
             $totalSelesai = $kecamatan->laporanInfrastruktur->where('status', 'Selesai')->count();
             $rasioPenyelesaian = $totalLaporan > 0 ? round(($totalSelesai / $totalLaporan) * 100, 1) : 0;
 
-            // Hitung rata-rata rating ulasan
             $ratings = [];
             foreach ($kecamatan->laporanInfrastruktur as $laporan) {
                 foreach ($laporan->ulasanLaporan as $ulasan) {
@@ -43,7 +42,6 @@ class LeaderboardController extends Controller
             ];
         })->sortByDesc('total_poin')->values();
 
-        // SPRINT 4 - FEATURE 6: Leaderboard & Poin Daerah [Dev 6]
         foreach ($leaderboard as $index => $item) {
             $item->rank = $index + 1;
         }
@@ -61,7 +59,6 @@ class LeaderboardController extends Controller
             ->latest()
             ->paginate(15);
 
-        // Cari kecamatan dengan poin tertinggi untuk info card
         $kecamatans = Daerah::with(['poinKontribusi'])->get();
         $topKecamatan = $kecamatans->map(function ($kec) {
             return (object) [
@@ -96,4 +93,4 @@ class LeaderboardController extends Controller
     }
 }
 
-// =========================================================
+

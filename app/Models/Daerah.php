@@ -32,5 +32,5 @@ class Daerah extends Model
     {
         return $this->hasMany(PoinKontribusiDaerah::class, 'id_daerah');
     }
-    // =========================================================
+
 }

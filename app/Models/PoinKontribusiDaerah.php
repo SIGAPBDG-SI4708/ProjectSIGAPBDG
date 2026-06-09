@@ -24,5 +24,3 @@ class PoinKontribusiDaerah extends Model
         return $this->belongsTo(LaporanInfrastruktur::class, 'laporan_infrastruktur_id');
     }
 }
-
-// =========================================================
