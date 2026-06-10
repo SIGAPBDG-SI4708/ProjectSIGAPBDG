@@ -105,6 +105,8 @@
                         Kerja</a>
                     <a href="{{ route('lacak') }}"
                         class="text-stone-600 dark:text-slate-300 hover:text-brand-500 dark:hover:text-brand-400 font-medium transition">Lacak</a>
+                    <a href="{{ route('leaderboard.indeks') }}"
+                        class="text-stone-600 dark:text-slate-300 hover:text-brand-500 dark:hover:text-brand-400 font-medium transition">Leaderboard</a>
                 </div>
 
                 <div class="hidden md:flex items-center gap-4">
@@ -243,6 +245,20 @@
                     <h4 class="text-xl font-bold text-stone-900 dark:text-white mb-3 mt-4">Lacak Laporan</h4>
                     <p class="text-stone-500 dark:text-slate-400 text-sm leading-relaxed">
                         Lacak setiap laporan yang Anda kirimkan menggunakan Tracking ID khusus. Ketahui progresnya.
+                    </p>
+                </div>
+                <div
+                    class="relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/40 dark:border-slate-700/50 text-center transition-transform hover:-translate-y-2 duration-300 pt-16 mt-12 md:mt-0">
+                    <div class="absolute -top-16 left-1/2 -translate-x-1/2 flex items-center justify-center">
+                        <div class="w-24 h-24 rounded-full bg-amber-500 border border-amber-600/30 flex items-center justify-center shadow-lg shadow-amber-500/20 animate-float" style="animation-delay: 1.5s;">
+                            <svg class="w-12 h-12 text-white fill-current" viewBox="0 0 20 20">
+                                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <h4 class="text-xl font-bold text-stone-900 dark:text-white mb-3 mt-4">Papan Peringkat</h4>
+                    <p class="text-stone-500 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                        Lihat peringkat kecamatan Ter-SIGAP Kota Bandung dan tingkat kepuasan ulasan warga.
                     </p>
                 </div>
             </div>
