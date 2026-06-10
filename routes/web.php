@@ -17,6 +17,7 @@ Route::post('/lacak', [LaporanController::class, 'prosesCariLaporan'])->name('pr
 Route::post('/lacak/{id}/ulasan', [LaporanController::class, 'simpanUlasan'])->name('lacak.ulasan');
 
 Route::post('/lapor-kejahatan', [LaporanController::class, 'simpanKejahatan'])->name('lapor.kejahatan');
+Route::get('/leaderboard', [\App\Http\Controllers\LeaderboardController::class, 'indeksPublik'])->name('leaderboard.indeks');
 
 Route::post('/chatbot/kirim', [\App\Http\Controllers\MinGapChatbotController::class, 'kirimPesan'])->name('chatbot.kirim');
 Route::post('/chatbot/reset', [\App\Http\Controllers\MinGapChatbotController::class, 'bersihkanRiwayat'])->name('chatbot.reset');
@@ -63,6 +64,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/asisten-ai/riwayat', [\App\Http\Controllers\AdminChatbotController::class, 'ambilRiwayat'])->name('asisten-ai.riwayat');
 
     Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar');
+    
+    Route::get('/leaderboard', [\App\Http\Controllers\LeaderboardController::class, 'indeksAdmin'])->name('leaderboard.indeks');
+    Route::post('/leaderboard/bonus', [\App\Http\Controllers\LeaderboardController::class, 'tambahPoinBonus'])->name('leaderboard.bonus');
 });
 
 Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar')->middleware('auth');
