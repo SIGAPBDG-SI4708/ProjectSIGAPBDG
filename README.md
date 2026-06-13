@@ -23,13 +23,13 @@
 
 | No | Nama | NIM | Peran |
 |----|------|-----|-------|
-| 1 | Nama Anggota 1 | 10XXXXXXXX | Project Manager |
-| 2 | Nama Anggota 2 | 10XXXXXXXX | Full-Stack Developer |
-| 3 | Nama Anggota 3 | 10XXXXXXXX | Front-End Developer |
-| 4 | Nama Anggota 4 | 10XXXXXXXX | Back-End Developer |
-| 5 | Nama Anggota 5 | 10XXXXXXXX | AI/ML Engineer |
-| 6 | Nama Anggota 6 | 10XXXXXXXX | UI/UX Designer |
-| 7 | Nama Anggota 7 | 10XXXXXXXX | QA & Tester |
+| 1 | Muhammad Rayhan Ramadhan | 102022330145 | Project Manager |
+| 2 | Alexander Christopher Togelang | 102022300040 | Developer |
+| 3 | Darvesh Gladwin Musyaffa | 102022300082 | Developer |
+| 4 | Feriangga Arkaan Prayetno | 102022330238 | Developer |
+| 5 | Jehezkiel Agna Saputra | 102022300416 | Developer |
+| 6 | Muhammad Caesar Rivaldo | 102022300289 | Developer |
+| 7 | Rahmania Anggraini | 102022300034  | Developer |
 
 ---
 
