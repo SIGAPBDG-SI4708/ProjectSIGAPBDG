@@ -209,7 +209,7 @@
             <h3 class="text-3xl md:text-4xl font-extrabold text-stone-900 dark:text-white mb-16">Portal Layanan Tersedia
             </h3>
 
-            <div class="grid md:grid-cols-3 gap-8 pt-8">
+            <div class="grid md:grid-cols-4 gap-8 pt-8">
                 <div
                     class="relative bg-white/70 dark:bg-slate-800/70 backdrop-blur-md rounded-3xl p-8 shadow-xl border border-white/40 dark:border-slate-700/50 text-center transition-transform hover:-translate-y-2 duration-300 pt-16 mt-12 md:mt-0">
                     <div class="absolute -top-16 left-1/2 -translate-x-1/2">
