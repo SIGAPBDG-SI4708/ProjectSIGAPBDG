@@ -216,6 +216,32 @@
                 </svg>
                 Laporan Masuk
             </a>
+
+            <a href="{{ route('admin.ekspor.indeks') }}"
+                class="nav-item flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 dark:text-slate-300 text-sm font-medium {{ request()->routeIs('admin.ekspor.*') ? 'nav-aktif' : '' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Ekspor Laporan
+            </a>
+
+             <a href="{{ route('admin.asisten-ai.indeks') }}"
+                class="nav-item flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 dark:text-slate-300 text-sm font-medium {{ request()->routeIs('admin.asisten-ai.*') ? 'nav-aktif' : '' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Asisten Keputusan AI
+            </a>
+            <a href="{{ route('admin.leaderboard.indeks') }}"
+                class="nav-item flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 dark:text-slate-300 text-sm font-medium {{ request()->routeIs('admin.leaderboard.*') ? 'nav-aktif' : '' }}">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                </svg>
+                Papan Peringkat Daerah
+            </a>
             @if(Auth::user()->role === 'Super Admin')
                 <a href="{{ route('admin.pegawai.indeks') }}"
                     class="nav-item flex items-center gap-3 px-3 py-3 rounded-xl text-slate-600 dark:text-slate-300 text-sm font-medium {{ request()->routeIs('admin.pegawai.*') ? 'nav-aktif' : '' }}">

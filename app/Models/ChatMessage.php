@@ -8,6 +8,12 @@ class ChatMessage extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'sender_id'   => 'integer',
+        'receiver_id' => 'integer',
+        'is_read'     => 'boolean',
+    ];
+
     public function sender()
     {
         return $this->belongsTo(User::class, 'sender_id');

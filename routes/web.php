@@ -17,6 +17,11 @@ Route::post('/lacak', [LaporanController::class, 'prosesCariLaporan'])->name('pr
 Route::post('/lacak/{id}/ulasan', [LaporanController::class, 'simpanUlasan'])->name('lacak.ulasan');
 
 Route::post('/lapor-kejahatan', [LaporanController::class, 'simpanKejahatan'])->name('lapor.kejahatan');
+Route::get('/leaderboard', [\App\Http\Controllers\LeaderboardController::class, 'indeksPublik'])->name('leaderboard.indeks');
+
+Route::post('/chatbot/kirim', [\App\Http\Controllers\MinGapChatbotController::class, 'kirimPesan'])->name('chatbot.kirim');
+Route::post('/chatbot/reset', [\App\Http\Controllers\MinGapChatbotController::class, 'bersihkanRiwayat'])->name('chatbot.reset');
+Route::get('/chatbot/riwayat', [\App\Http\Controllers\MinGapChatbotController::class, 'ambilRiwayat'])->name('chatbot.riwayat');
 
 Route::prefix('portal-internal')->middleware('guest')->group(function () {
     Route::get('/', [OtentikasiController::class, 'tampilkanSambutan'])->name('sambutan');
@@ -30,8 +35,12 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'tampilkanBeranda'])->name('beranda');
     Route::get('/laporan', [AdminController::class, 'tampilkanDaftarLaporan'])->name('laporan.indeks');
     Route::get('/laporan/{id}', [AdminController::class, 'tampilkanDetailLaporan'])->name('laporan.detail');
-    Route::patch('/laporan/{id}', [AdminController::class, 'perbaruiStatusLaporan'])->name('laporan.perbarui');
-    Route::get('/keuangan', [PengajuanDanaController::class, 'tampilkanDaftarPengajuan'])->name('keuangan.indeks');
+    Route::patch('/laporan/{id}', [\App\Http\Controllers\AuditFisikController::class, 'perbaruiStatusLaporan'])->name('laporan.perbarui');
+    Route::get('/keuangan', [\App\Http\Controllers\AuditDanaController::class, 'tampilkanDaftarAudit'])->name('keuangan.indeks');
+    Route::post('/pengajuan/{id}/proses-audit', [\App\Http\Controllers\AuditDanaController::class, 'prosesPersetujuanAudit'])->name('pengajuan.proses-audit');
+    Route::get('/ekspor', [\App\Http\Controllers\LaporanEksporController::class, 'indeks'])->name('ekspor.indeks');
+    Route::get('/ekspor/csv', [\App\Http\Controllers\LaporanEksporController::class, 'eksporCsv'])->name('ekspor.csv');
+    Route::get('/ekspor/pdf', [\App\Http\Controllers\LaporanEksporController::class, 'eksporPdf'])->name('ekspor.pdf');
     Route::post('/pengajuan', [PengajuanDanaController::class, 'simpanPengajuan'])->name('pengajuan.simpan');
     Route::post('/pengajuan/{id}/proses', [PengajuanDanaController::class, 'prosesPersetujuan'])->name('pengajuan.proses');
     Route::post('/pengajuan/{id}/ajukan-ulang', [PengajuanDanaController::class, 'ajukanUlang'])->name('pengajuan.ajukan-ulang');
@@ -49,7 +58,15 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead']);
     Route::patch('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
 
+    Route::get('/asisten-ai', [\App\Http\Controllers\AdminChatbotController::class, 'indeks'])->name('asisten-ai.indeks');
+    Route::post('/asisten-ai/kirim', [\App\Http\Controllers\AdminChatbotController::class, 'kirimPesan'])->name('asisten-ai.kirim');
+    Route::post('/asisten-ai/reset', [\App\Http\Controllers\AdminChatbotController::class, 'bersihkanRiwayat'])->name('asisten-ai.reset');
+    Route::get('/asisten-ai/riwayat', [\App\Http\Controllers\AdminChatbotController::class, 'ambilRiwayat'])->name('asisten-ai.riwayat');
+
     Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar');
+
+    Route::get('/leaderboard', [\App\Http\Controllers\LeaderboardController::class, 'indeksAdmin'])->name('leaderboard.indeks');
+    Route::post('/leaderboard/bonus', [\App\Http\Controllers\LeaderboardController::class, 'tambahPoinBonus'])->name('leaderboard.bonus');
 });
 //resolve
 Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar')->middleware('auth');

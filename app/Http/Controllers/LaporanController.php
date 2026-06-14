@@ -19,30 +19,30 @@ class LaporanController extends Controller
     public function prosesSimpanLaporan(Request $request)
     {
         $request->validate([
-            'foto'      => ['required', 'file', 'image', 'max:5120'],
-            'latitude'  => ['required', 'numeric'],
+            'foto' => ['required', 'file', 'image', 'max:5120'],
+            'latitude' => ['required', 'numeric'],
             'longitude' => ['required', 'numeric'],
         ]);
 
-        $nilaiHash       = md5_file($request->file('foto')->path());
+        $nilaiHash = md5_file($request->file('foto')->path());
         $laporanDuplikat = LaporanInfrastruktur::where('hash_foto', $nilaiHash)->first();
 
         if ($laporanDuplikat) {
             return back()->withErrors(['foto' => 'Laporan ditolak: Foto ini sudah pernah digunakan untuk melapor sebelumnya!'])->withInput();
         }
 
-        $fotoAwal         = $request->file('foto')->store('laporan', 'public');
-        $trackingId       = 'SIGAP-' . Str::upper(Str::random(6));
+        $fotoAwal = $request->file('foto')->store('laporan', 'public');
+        $trackingId = 'SIGAP-' . Str::upper(Str::random(6));
         $idDaerahTerpilih = 1;
 
         try {
-            $nilaiLatitude  = $request->input('latitude');
+            $nilaiLatitude = $request->input('latitude');
             $nilaiLongitude = $request->input('longitude');
 
             $responsApi = Http::withHeaders(['User-Agent' => 'SigapBdgApp/1.0 (student project)'])
                 ->get("https://nominatim.openstreetmap.org/reverse?format=json&lat={$nilaiLatitude}&lon={$nilaiLongitude}");
 
-            $dataPeta   = $responsApi->json();
+            $dataPeta = $responsApi->json();
             $alamatPeta = $dataPeta['address'] ?? [];
 
             $namaKecamatanApi = $alamatPeta['subdistrict']
@@ -68,22 +68,36 @@ class LaporanController extends Controller
         }
 
         $laporanBaru = LaporanInfrastruktur::create([
-            'id_daerah'   => $idDaerahTerpilih,
+            'id_daerah' => $idDaerahTerpilih,
             'tracking_id' => $trackingId,
-            'latitude'    => $request->input('latitude'),
-            'longitude'   => $request->input('longitude'),
-            'foto_awal'   => $fotoAwal,
-            'hash_foto'   => $nilaiHash,
-            'status'      => 'Menunggu',
+            'latitude' => $request->input('latitude'),
+            'longitude' => $request->input('longitude'),
+            'foto_awal' => $fotoAwal,
+            'hash_foto' => $nilaiHash,
+            'status' => 'Menunggu',
+        ]);
+
+        \App\Models\LaporanTimeline::create([
+            'laporan_infrastruktur_id' => $laporanBaru->id,
+            'status' => 'Menunggu',
+            'deskripsi' => 'Laporan berhasil dibuat oleh warga dengan nomor tracking ID: ' . $trackingId . ' dan sedang menunggu verifikasi oleh Admin.',
+        ]);
+        
+        \App\Models\PoinKontribusiDaerah::create([
+            'id_daerah' => $laporanBaru->id_daerah,
+            'laporan_infrastruktur_id' => $laporanBaru->id,
+            'poin' => 10,
+            'kategori' => 'Laporan Baru',
+            'deskripsi' => 'Apresiasi partisipasi warga melaporkan infrastruktur rusak dengan ID: ' . $trackingId,
         ]);
 
         \App\Services\LayananSimulasiAi::prosesAnalisis($laporanBaru->id, $fotoAwal);
 
-        $admins = \App\Models\User::where('role', 'Super Admin')
-            ->orWhere(function($query) use ($idDaerahTerpilih) {
+         $admins = \App\Models\User::where('role', 'Super Admin')
+            ->orWhere(function ($query) use ($idDaerahTerpilih) {
                 $query->where('role', 'Admin Daerah')->where('id_daerah', $idDaerahTerpilih);
             })->get();
-            
+
         \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\LaporanMasukNotification($laporanBaru));
 
         event(new \App\Events\LaporanMasukEvent($laporanBaru));
@@ -94,13 +108,13 @@ class LaporanController extends Controller
     public function simpanKejahatan(Request $request)
     {
         $request->validate([
-            'latitude'  => ['required', 'numeric'],
+            'latitude' => ['required', 'numeric'],
             'longitude' => ['required', 'numeric'],
         ]);
 
         LaporanKejahatan::create([
             'id_daerah' => 1,
-            'latitude'  => $request->input('latitude'),
+            'latitude' => $request->input('latitude'),
             'longitude' => $request->input('longitude'),
         ]);
 
@@ -111,11 +125,11 @@ class LaporanController extends Controller
     {
         $kodeLacak = session('sukses_ulasan_tracking_id');
         $dataLaporan = null;
-        
+
         if ($kodeLacak) {
             $dataLaporan = LaporanInfrastruktur::where('tracking_id', $kodeLacak)->first();
         }
-        
+
         return view('laporan.lacak', compact('dataLaporan', 'kodeLacak'));
     }
 
@@ -125,7 +139,7 @@ class LaporanController extends Controller
             'tracking_id' => ['required', 'string'],
         ]);
 
-        $kodeLacak   = Str::upper(trim($request->input('tracking_id')));
+        $kodeLacak = Str::upper(trim($request->input('tracking_id')));
         $dataLaporan = LaporanInfrastruktur::where('tracking_id', $kodeLacak)->first();
 
         return view('laporan.lacak', compact('dataLaporan', 'kodeLacak'));
@@ -144,10 +158,21 @@ class LaporanController extends Controller
             return back()->with('error', 'Laporan belum selesai.');
         }
 
+        $ratingInput = (int) $request->input('rating');
+        $poinUlasan = $ratingInput * 10;
+
         \App\Models\UlasanLaporan::create([
             'laporan_infrastruktur_id' => $id,
-            'rating'     => $request->input('rating'),
-            'ulasan'     => $request->input('ulasan'),
+            'rating' => $ratingInput,
+            'ulasan' => $request->input('ulasan'),
+        ]);
+
+        \App\Models\PoinKontribusiDaerah::create([
+            'id_daerah' => $dataLaporan->id_daerah,
+            'laporan_infrastruktur_id' => $dataLaporan->id,
+            'poin' => $poinUlasan,
+            'kategori' => 'Ulasan Warga',
+            'deskripsi' => 'Apresiasi ulasan warga dengan rating ' . $ratingInput . ' bintang.',
         ]);
 
         return redirect()->route('lacak')

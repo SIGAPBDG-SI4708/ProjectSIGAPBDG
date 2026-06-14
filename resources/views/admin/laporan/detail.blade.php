@@ -105,6 +105,14 @@
                                         {{ number_format($dataLaporan->analisisAi->estimasi_biaya, 0, ',', '.') }}
                                     </div>
                                 </div>
+
+                                <a href="{{ route('admin.asisten-ai.indeks', ['laporan_id' => $dataLaporan->id]) }}"
+                                    class="inline-flex items-center justify-center gap-2 w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-3 rounded-xl transition duration-200 shadow-md shadow-indigo-600/10 mt-3">
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                    Analisis Asisten AI
+                                </a>
                             </div>
                         </div>
                     @endif
@@ -286,7 +294,7 @@
                     </div>
                 @endif
 
-                @if(Auth::user()->role === 'Admin Daerah' && $dataLaporan->status !== 'Selesai' && $dataLaporan->status !== 'Ditolak' && $dataLaporan->analisisAi && !$dataLaporan->analisisAi->is_spam)
+                @if(Auth::user()->role === 'Admin Daerah' && $dataLaporan->status === 'Proses' && $dataLaporan->analisisAi && !$dataLaporan->analisisAi->is_spam)
                     @php
                         $pengajuanTerkini = $dataLaporan->pengajuanDana->sortByDesc('waktu_pengajuan')->first();
                     @endphp
@@ -326,8 +334,8 @@
                             </div>
                         @elseif($pengajuanTerkini->status_approval === 'Disetujui')
                             <div
-                                class="flex items-center gap-2.5 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl px-4 py-3">
-                                <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 flex-shrink-0" fill="none"
+                                class="flex items-start gap-2.5 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl px-4 py-3">
+                                <svg class="w-5 h-5 text-emerald-500 dark:text-emerald-400 flex-shrink-0 mt-0.5" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                 </svg>
@@ -336,12 +344,17 @@
                                     <div class="text-emerald-500 dark:text-emerald-400/60 text-xs mt-0.5">Nominal: Rp
                                         {{ number_format($pengajuanTerkini->nominal_diajukan, 0, ',', '.') }}
                                     </div>
+                                    @if($pengajuanTerkini->catatan_approval)
+                                        <div class="mt-2 text-xs text-emerald-700 dark:text-emerald-400/80 bg-emerald-100/50 dark:bg-emerald-950/40 p-2 rounded-lg border border-emerald-200/55 dark:border-emerald-900/30">
+                                            <span class="font-bold">Catatan Super Admin:</span> "{{ $pengajuanTerkini->catatan_approval }}"
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         @elseif($pengajuanTerkini->status_approval === 'Ditolak')
                             <div
-                                class="flex items-center gap-2.5 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3 mb-3">
-                                <svg class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0" fill="none" stroke="currentColor"
+                                class="flex items-start gap-2.5 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-500/20 rounded-xl px-4 py-3 mb-3">
+                                <svg class="w-5 h-5 text-red-500 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12" />
@@ -352,6 +365,11 @@
                                     <div class="text-red-500 dark:text-red-400/60 text-xs mt-0.5">Nominal sebelumnya: Rp
                                         {{ number_format($pengajuanTerkini->nominal_diajukan, 0, ',', '.') }}
                                     </div>
+                                    @if($pengajuanTerkini->catatan_approval)
+                                        <div class="mt-2 text-xs text-red-700 dark:text-red-400/80 bg-red-100/50 dark:bg-red-950/40 p-2 rounded-lg border border-red-200/55 dark:border-red-900/30">
+                                            <span class="font-bold">Catatan Super Admin:</span> "{{ $pengajuanTerkini->catatan_approval }}"
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                             <button type="button" @click="bukaModal = true"

@@ -272,32 +272,104 @@
                                 <div class="text-xs font-mono text-brand-500 dark:text-brand-400">{{ $dataLaporan->longitude }}</div>
                             </div>
                         </div>
-
-                        <div>
-                            <div class="text-xs text-stone-400 dark:text-slate-500 mb-2 font-medium">Foto Laporan Awal</div>
-                            <div class="rounded-2xl overflow-hidden bg-stone-100 dark:bg-slate-900 aspect-video flex items-center justify-center border border-stone-200 dark:border-slate-700/50">
-                                <img
-                                    src="{{ asset('storage/' . $dataLaporan->foto_awal) }}"
-                                    alt="Foto kerusakan"
-                                    class="w-full h-full object-cover"
-                                    onerror="this.parentElement.innerHTML='<div class=\'text-stone-400 dark:text-slate-600 text-sm flex flex-col items-center gap-2\'><svg class=\'w-8 h-8\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\'/></svg>Foto tidak tersedia</div>'"
-                                >
+                        
+                        <div class="mb-6 pt-5 border-t border-stone-100 dark:border-slate-700/50">
+                            <div class="text-sm font-bold text-stone-800 dark:text-white mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Riwayat Perkembangan Laporan
+                            </div>
+                            
+                            <div class="relative pl-6 border-l-2 border-stone-200 dark:border-slate-800 space-y-6 ml-3">
+                                @forelse($dataLaporan->timeline as $tl)
+                                    <div class="relative">
+                                        <!-- Dot status -->
+                                        @php
+                                            $colorDot = match($tl->status) {
+                                                'Menunggu' => 'bg-amber-500 ring-amber-100 dark:ring-yellow-950/50',
+                                                'Proses'   => 'bg-brand-500 ring-brand-100 dark:ring-brand-950/50',
+                                                'Selesai'  => 'bg-emerald-500 ring-emerald-100 dark:ring-green-950/50',
+                                                'Ditolak'  => 'bg-red-500 ring-red-100 dark:ring-red-950/50',
+                                                default    => 'bg-stone-500 ring-stone-100 dark:ring-slate-900',
+                                            };
+                                        @endphp
+                                        <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full {{ $colorDot }} ring-4 z-10"></div>
+                                        
+                                        <div>
+                                            <div class="flex items-center justify-between gap-2 flex-wrap mb-1">
+                                                <span class="text-xs font-bold text-stone-700 dark:text-slate-300">
+                                                    Status: {{ $tl->status }}
+                                                </span>
+                                                <span class="text-[10px] text-stone-400 dark:text-slate-500 font-mono">
+                                                    {{ $tl->created_at->translatedFormat('d M Y - H:i') }} WIB
+                                                </span>
+                                            </div>
+                                            <p class="text-xs text-stone-500 dark:text-slate-400 leading-relaxed">
+                                                {{ $tl->deskripsi }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="text-xs text-stone-400 dark:text-slate-600 italic">Belum ada riwayat tercatat.</div>
+                                @endforelse
                             </div>
                         </div>
 
                         @if($dataLaporan->foto_selesai)
-                        <div class="mt-4">
-                            <div class="text-xs text-stone-400 dark:text-slate-500 mb-2 font-medium flex items-center gap-1.5">
-                                <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                                Foto Setelah Perbaikan
+                            <div class="mb-6 pt-5 border-t border-stone-100 dark:border-slate-700/50">
+                                <div class="text-xs text-stone-400 dark:text-slate-500 mb-2.5 font-medium flex items-center justify-between">
+                                    <span class="flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Perbandingan Foto (Geser Slider)
+                                    </span>
+                                    <span class="text-[10px] text-stone-400 font-mono">Sebelum vs Sesudah</span>
+                                </div>
+                                <div class="relative w-full aspect-video rounded-2xl overflow-hidden select-none border border-stone-200 dark:border-slate-700/50 shadow-inner" x-data="{ sliderVal: 50 }">
+                                    <!-- Before Image (Background) -->
+                                    <img src="{{ asset('storage/' . $dataLaporan->foto_selesai) }}" class="absolute inset-0 w-full h-full object-cover" alt="Sebelum Perbaikan">
+                                    <div class="absolute left-4 top-4 bg-black/60 backdrop-blur-sm text-white px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider z-20">
+                                        Sebelum
+                                    </div>
+
+                                    <!-- After Image (Overlay, clipped from the right side) -->
+                                    <img src="{{ asset('storage/' . $dataLaporan->foto_awal) }}" 
+                                        class="absolute inset-0 w-full h-full object-cover z-10 pointer-events-none" 
+                                        :style="`clip-path: inset(0 ${100 - sliderVal}% 0 0)`"
+                                        alt="Setelah Perbaikan">
+                                    <div class="absolute right-4 top-4 bg-brand-50 text-black px-2.5 py-1 text-[10px] font-bold rounded-lg uppercase tracking-wider z-20"
+                                        :style="`opacity: ${sliderVal > 15 ? 1 : 0}; transition: opacity 0.2s;` shadow-lg">
+                                        Sesudah
+                                    </div>
+                                    
+                                    <!-- Slide Handle Line -->
+                                    <div class="absolute top-0 bottom-0 w-0.5 bg-white z-20 pointer-events-none shadow" :style="`left: ${sliderVal}%` shadow-lg">
+                                        <!-- Slide Handle Button -->
+                                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-slate-800 dark:text-slate-900 shadow-xl flex items-center justify-center border border-slate-200 dark:border-slate-700 cursor-ew-resize">
+                                            <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 9l-4 3 4 3m8-6l4 3-4 3" />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <!-- Invisible Range Input overlay to capture drags smoothly -->
+                                    <input type="range" min="0" max="100" x-model="sliderVal" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30 m-0">
+                                </div>
                             </div>
-                            <div class="rounded-2xl overflow-hidden bg-stone-100 dark:bg-slate-900 aspect-video border border-stone-200 dark:border-slate-700/50">
-                                <img src="{{ asset('storage/' . $dataLaporan->foto_selesai) }}" alt="Foto selesai"
-                                    class="w-full h-full object-cover">
+                        @else
+                            <div class="mb-6">
+                                <div class="text-xs text-stone-400 dark:text-slate-500 mb-2 font-medium">Foto Laporan Awal</div>
+                                <div class="rounded-2xl overflow-hidden bg-stone-100 dark:bg-slate-900 aspect-video flex items-center justify-center border border-stone-200 dark:border-slate-700/50">
+                                    <img
+                                        src="{{ asset('storage/' . $dataLaporan->foto_awal) }}"
+                                        alt="Foto kerusakan"
+                                        class="w-full h-full object-cover"
+                                        onerror="this.parentElement.innerHTML='<div class=\'text-stone-400 dark:text-slate-600 text-sm flex flex-col items-center gap-2\'><svg class=\'w-8 h-8\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z\'/></svg>Foto tidak tersedia</div>'"
+                                    >
+                                </div>
                             </div>
-                        </div>
                         @endif
 
                         @if($dataLaporan->status === 'Selesai')
