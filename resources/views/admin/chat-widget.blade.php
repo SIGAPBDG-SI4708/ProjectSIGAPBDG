@@ -222,10 +222,13 @@
                         :disabled="isSending">
                     <button type="submit" :disabled="!newMessage.trim() || isSending"
                         class="w-10 h-10 rounded-full bg-brand-500 hover:bg-brand-600 text-white flex items-center justify-center shrink-0 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                d="M3 10l18-7-7 18-2-8-9-3z" />
                         </svg>
+
                     </button>
                 </form>
             </div>
