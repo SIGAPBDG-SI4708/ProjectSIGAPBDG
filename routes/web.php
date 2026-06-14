@@ -64,7 +64,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/asisten-ai/riwayat', [\App\Http\Controllers\AdminChatbotController::class, 'ambilRiwayat'])->name('asisten-ai.riwayat');
 
     Route::post('/keluar', [OtentikasiController::class, 'keluar'])->name('keluar');
-    
+
     Route::get('/leaderboard', [\App\Http\Controllers\LeaderboardController::class, 'indeksAdmin'])->name('leaderboard.indeks');
     Route::post('/leaderboard/bonus', [\App\Http\Controllers\LeaderboardController::class, 'tambahPoinBonus'])->name('leaderboard.bonus');
 });
